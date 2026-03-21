@@ -3,165 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المصرية العالمية للأدوية البيطرية | أدوية بيطرية في مصر</title>
-<meta name="description" content="المصرية العالمية للأدوية البيطرية - تصنيع واستيراد الأدوية البيطرية في مصر وخدمة قطاع الدواجن والثروة الحيوانية">
+    <title>المصرية الدولية للأدوية البيطرية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/site.css">
     <style>
-        /* ===== إعدادات عامة ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #1B5E20;
-            --primary-light: #2E7D32;
-            --secondary: #0D47A1;
-            --secondary-light: #1565C0;
-            --gold: #F9A825;
-            --gold-dark: #F57F17;
-            --white: #FFFFFF;
-            --light-bg: #F5F7FA;
-            --dark-text: #1A1A2E;
-            --gray-text: #555;
-            --shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            color: var(--dark-text);
-            line-height: 1.8;
-            overflow-x: hidden;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-title h2 {
-            font-size: 2.2rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--primary));
-            border-radius: 2px;
-        }
-
-        .section-title p {
-            color: var(--gray-text);
-            font-size: 1.1rem;
-            margin-top: 20px;
-        }
-
-        /* ===== النافبار ===== */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .navbar .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        .logo-text h1 {
-            font-size: 1rem;
-            color: var(--primary);
-            line-height: 1.3;
-        }
-
-        .logo-text span {
-            font-size: 0.7rem;
-            color: var(--secondary);
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            font-weight: 600;
-            color: var(--dark-text);
-            transition: color 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .nav-cta {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: white !important;
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-weight: 700;
-        }
-
-        .nav-cta:hover {
-            transform: scale(1.05);
-        }
-
-        .hamburger {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--primary);
-        }
-
         /* ===== البانر الرئيسي ===== */
         .hero {
             min-height: 100vh;
@@ -277,16 +123,13 @@
             animation: floatAnimation 3s ease-in-out infinite;
         }
 
-        .hero-image-circle {
-            width: 400px;
-            height: 400px;
+        .hero-logo-img {
+            width: 350px;
+            height: 350px;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            border: 2px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8rem;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .hero-stats {
@@ -337,8 +180,12 @@
             justify-content: center;
         }
 
-        .about-image i {
-            font-size: 5rem;
+        .about-logo-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.5);
             margin-bottom: 20px;
         }
 
@@ -379,6 +226,25 @@
         .categories {
             padding: 100px 0;
             background: var(--light-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .categories::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(500px 220px at 15% 20%, rgba(249,168,37,0.12), transparent 60%),
+                radial-gradient(520px 240px at 85% 30%, rgba(13,71,161,0.10), transparent 62%),
+                radial-gradient(420px 200px at 55% 85%, rgba(27,94,32,0.10), transparent 60%);
+            opacity: 1;
+        }
+
+        .categories .container {
+            position: relative;
+            z-index: 2;
         }
 
         .categories-grid {
@@ -789,6 +655,15 @@
             font-size: 0.9rem;
         }
 
+        .footer-logo-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+            margin-bottom: 15px;
+        }
+
         .footer-links h4 {
             color: var(--gold);
             margin-bottom: 15px;
@@ -868,6 +743,7 @@
             transform: scale(1.1);
         }
 
+        /* ===== فافيكون ===== */
         /* ===== الأنيميشن ===== */
         @keyframes fadeInUp {
             from {
@@ -891,83 +767,6 @@
             100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
 
-        /* ===== الريسبونسيف ===== */
-        @media (max-width: 992px) {
-            .hero .container {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .hero-buttons {
-                justify-content: center;
-            }
-
-            .hero-stats {
-                justify-content: center;
-            }
-
-            .hero-image-circle {
-                width: 250px;
-                height: 250px;
-                font-size: 5rem;
-            }
-
-            .about-grid,
-            .categories-grid,
-            .vision-grid,
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .why-us-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                right: 0;
-                width: 100%;
-                background: white;
-                flex-direction: column;
-                padding: 20px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                gap: 15px;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .hamburger {
-                display: block;
-            }
-
-            .hero-content h1 {
-                font-size: 1.8rem;
-            }
-
-            .why-us-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .about-features {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-
         /* ===== Scroll Animation ===== */
         .animate-on-scroll {
             opacity: 0;
@@ -980,16 +779,16 @@
             transform: translateY(0);
         }
     </style>
+    <!-- فافيكون اللوجو في تاب المتصفح -->
+    <link rel="icon" type="image/png" href="logo.png">
 </head>
 <body>
 
     <!-- ===== النافبار ===== -->
     <nav class="navbar">
         <div class="container">
-            <a href="#" class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-paw"></i>
-                </div>
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="لوجو المصرية الدولية للأدوية البيطرية" class="logo-img">
                 <div class="logo-text">
                     <h1>المصرية الدولية</h1>
                     <span>للأدوية البيطرية</span>
@@ -998,9 +797,12 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home">الرئيسية</a></li>
                 <li><a href="#about">من نحن</a></li>
-                <li><a href="#products">منتجاتنا</a></li>
-                <li><a href="#why-us">لماذا نحن</a></li>
-                <li><a href="#contact" class="nav-cta">تواصل معنا</a></li>
+                <li><a href="products.html">المنتجات</a></li>
+                <li><a href="blog.html">المدونة</a></li>
+                <li><a href="reviews.html">التقييمات</a></li>
+                <li><a href="checkout.html" class="nav-cta">السلة (<span data-cart-count style="display:none"></span>)</a></li>
+                <li><a href="contact.html">تواصل معنا</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
             </ul>
             <div class="hamburger" onclick="toggleMenu()">
                 <i class="fas fa-bars"></i>
@@ -1049,9 +851,7 @@
                 </div>
             </div>
             <div class="hero-image">
-                <div class="hero-image-circle">
-                    🐾
-                </div>
+                    <img src="logo.png" alt="لوجو المصرية الدولية للأدوية البيطرية" class="hero-logo-img">
             </div>
         </div>
     </section>
@@ -1065,7 +865,8 @@
             </div>
             <div class="about-grid">
                 <div class="about-image animate-on-scroll">
-                    <i class="fas fa-building"></i>
+                    <!-- ✅ اللوجو في قسم من نحن -->
+                    <img src="logo.png" alt="لوجو المصرية الدولية" class="about-logo-img">
                     <h2>المصرية الدولية</h2>
                     <p style="font-size: 1.2rem; opacity: 0.9;">للأدوية البيطرية</p>
                     <p style="margin-top: 15px; opacity: 0.8;">Egyptian International Veterinary Pharmaceuticals</p>
@@ -1127,30 +928,30 @@
                         <p>صنع في مصر بمعايير عالمية</p>
                     </div>
                     <div class="sub-categories">
-                        <div class="sub-category">
+                        <a href="أدوية الدواجن محلي.html" class="sub-category">
                             <div class="sub-category-icon">🐔</div>
                             <div class="sub-category-info">
                                 <h4>أدوية الدواجن</h4>
                                 <p>مضادات حيوية، لقاحات، فيتامينات</p>
                             </div>
-                            <span class="sub-category-badge">قريباً</span>
-                        </div>
-                        <div class="sub-category">
+<span class="sub-category-badge">قريباً</span>
+</a>
+                        <a href="أدوية الثروة الحيوانية محلي.html" class="sub-category">
                             <div class="sub-category-icon">🐄</div>
                             <div class="sub-category-info">
                                 <h4>أدوية الثروة الحيوانية</h4>
                                 <p>أبقار، جاموس، أغنام، ماعز</p>
                             </div>
-                            <span class="sub-category-badge">قريباً</span>
-                        </div>
-                        <div class="sub-category">
+<span class="sub-category-badge">قريباً</span>
+</a>
+                        <a href="أدوية الحيوانات الأليفة محلي.html" class="sub-category">
                             <div class="sub-category-icon">🐕</div>
                             <div class="sub-category-info">
                                 <h4>أدوية الحيوانات الأليفة</h4>
                                 <p>قطط، كلاب، حيوانات منزلية</p>
                             </div>
-                            <span class="sub-category-badge">قريباً</span>
-                        </div>
+<span class="sub-category-badge">قريباً</span>
+</a>
                     </div>
                 </div>
 
@@ -1162,30 +963,30 @@
                         <p>من أفضل المصادر العالمية</p>
                     </div>
                     <div class="sub-categories">
-                        <div class="sub-category">
+                        <a href="أدوية الدواجن مستورد.html" class="sub-category">
                             <div class="sub-category-icon">🐔</div>
                             <div class="sub-category-info">
                                 <h4>أدوية الدواجن</h4>
                                 <p>مستحضرات عالمية معتمدة</p>
                             </div>
-                            <span class="sub-category-badge">قريباً</span>
-                        </div>
-                        <div class="sub-category">
+<span class="sub-category-badge">قريباً</span>
+</a>
+                        <a href="أدوية الثروة الحيوانية مستورد.html" class="sub-category">
                             <div class="sub-category-icon">🐄</div>
                             <div class="sub-category-info">
                                 <h4>أدوية الثروة الحيوانية</h4>
                                 <p>أبقار، جاموس، أغنام، ماعز</p>
                             </div>
-                            <span class="sub-category-badge">قريباً</span>
-                        </div>
-                        <div class="sub-category">
+<span class="sub-category-badge">قريباً</span>
+</a>
+                        <a href="أدوية الحيوانات الأليفة مستورد.html" class="sub-category">
                             <div class="sub-category-icon">🐕</div>
                             <div class="sub-category-info">
                                 <h4>أدوية الحيوانات الأليفة</h4>
                                 <p>علاجات ومكملات عالمية</p>
                             </div>
-                            <span class="sub-category-badge">قريباً</span>
-                        </div>
+<span class="sub-category-badge">قريباً</span>
+</a>
                     </div>
                 </div>
             </div>
@@ -1196,7 +997,7 @@
     <section class="why-us" id="why-us">
         <div class="container">
             <div class="section-title animate-on-scroll">
-                <h2>لماذا تختار المصرية الدولية؟</h2>
+                <h2>لماذا تختار المصرية العالمية؟</h2>
                 <p>مميزات تجعلنا الخيار الأول للأطباء البيطريين</p>
             </div>
             <div class="why-us-grid">
@@ -1305,7 +1106,7 @@
                         </div>
                         <div>
                             <h4>واتساب</h4>
-                            <p>01XXXXXXXXX</p>
+                            <p>01008226733</p>
                         </div>
                     </div>
                     <div class="contact-card">
@@ -1323,7 +1124,7 @@
                         </div>
                         <div>
                             <h4>اتصل بنا</h4>
-                            <p>01XXXXXXXXX</p>
+                            <p>01008226733</p>
                         </div>
                     </div>
                     <div class="contact-card">
@@ -1332,10 +1133,10 @@
                         </div>
                         <div>
                             <h4>العنوان</h4>
-                            <p>مصر - [أضف العنوان هنا]</p>
+                            <p>مصر - [شارع الشعراوي -ابوالمطامير -البحيرة]</p>
                         </div>
                     </div>
-                    <a href="https://wa.me/20XXXXXXXXXX" target="_blank" class="whatsapp-big-btn">
+                    <a href="https://wa.me/201008226733" target="_blank" class="whatsapp-big-btn">
                         <i class="fab fa-whatsapp"></i>
                         تواصل معنا عبر واتساب
                     </a>
@@ -1349,7 +1150,9 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-about">
-                    <h3>🐾 المصرية الدولية للأدوية البيطرية</h3>
+                    <!-- ✅ اللوجو في الفوتر -->
+                    <img src="logo.png" alt="لوجو" class="footer-logo-img">
+                    <h3>المصرية الدولية للأدوية البيطرية</h3>
                     <p>
                         شركة مصرية متخصصة في تصنيع واستيراد الأدوية البيطرية
                         لخدمة قطاع الدواجن والثروة الحيوانية والحيوانات الأليفة.
@@ -1389,35 +1192,12 @@
     </footer>
 
     <!-- ===== زر الواتساب العائم ===== -->
-    <a href="https://wa.me/20XXXXXXXXXX" target="_blank" class="whatsapp-float">
+    <a href="https://wa.me/201008226733" target="_blank" class="whatsapp-float">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- ===== JavaScript ===== -->
+    <script src="assets/site.js"></script>
     <script>
-        // قائمة الموبايل
-        function toggleMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
-        }
-
-        // إغلاق القائمة عند الضغط على رابط
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('navLinks').classList.remove('active');
-            });
-        });
-
-        // التمرير السلس
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
         // أنيميشن عند التمرير
         const observerOptions = {
             threshold: 0.1,
@@ -1436,22 +1216,12 @@
             observer.observe(el);
         });
 
-        // إرسال النموذج
+        // إرسال النموذج (نموذج ثابت)
         function handleSubmit(e) {
             e.preventDefault();
             alert('✅ تم إرسال استفسارك بنجاح!\nسنتواصل معك في أقرب وقت.');
             e.target.reset();
         }
-
-        // تغيير شكل النافبار عند التمرير
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.padding = '5px 0';
-            } else {
-                navbar.style.padding = '0';
-            }
-        });
     </script>
 
 </body>
