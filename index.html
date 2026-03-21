@@ -2,10 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>المصرية الدولية للأدوية البيطرية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- ارفع مع المشروع مجلد assets/ كاملاً (site.css + site.js) حتى يعمل الموقع على GitHub Pages -->
     <link rel="stylesheet" href="assets/site.css">
     <style>
         /* ===== البانر الرئيسي ===== */
@@ -777,6 +778,64 @@
         .animate-on-scroll.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* ===== الموبايل — النسخة المدمجة تظهر فقط تحت 768px ===== */
+        @media (max-width: 768px) {
+            .hero .container { flex-direction: column; gap: 30px; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .hero-logo-img { width: 220px; height: 220px; }
+            .about-grid, .categories-grid, .vision-grid, .contact-grid { grid-template-columns: 1fr; }
+            .why-us-grid { grid-template-columns: 1fr; gap: 16px; }
+            .hero { padding-top: 70px; min-height: auto; padding-bottom: 50px; }
+            .hero-content h1 { font-size: 1.75rem; }
+            .hero-content p { font-size: 1rem; }
+            .hero-buttons { flex-direction: column; }
+            .hero-buttons .btn { width: 100%; justify-content: center; }
+            .hero-stats { flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 28px; }
+            .hero-stats .stat-item h3 { font-size: 1.5rem; }
+            .hero-logo-img { width: 180px; height: 180px; }
+            .about, .categories, .why-us, .vision, .contact { padding: 60px 0; }
+            .about-image { min-height: 320px; padding: 30px; }
+            .about-logo-img { width: 140px; height: 140px; }
+            .about-features { grid-template-columns: 1fr; }
+            .why-us-grid { grid-template-columns: 1fr; }
+            .why-card { padding: 28px 20px; }
+            .section-title h2 { font-size: 1.6rem; }
+            .contact-form { padding: 28px 20px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+            .whatsapp-float { bottom: max(18px, env(safe-area-inset-bottom)); left: max(18px, env(safe-area-inset-left)); }
+        }
+        @media (max-width: 480px) {
+            .hero-content h1 { font-size: 1.5rem; }
+            .hero-stats { gap: 16px; }
+            .category-header { padding: 24px 20px; }
+            .category-header i { font-size: 2rem; }
+            .sub-category { padding: 16px; flex-wrap: wrap; }
+            .form-group input, .form-group textarea, .form-group select { padding: 12px 14px; font-size: 16px; }
+        }
+        /* سطح المكتب (يفرض التخطيط الواسع بعد قواعد الصفحة — مهم لـ GitHub والعرض الكامل) */
+        @media (min-width: 769px) {
+            .hero .container {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .about-grid,
+            .categories-grid,
+            .vision-grid,
+            .contact-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .why-us-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .footer-grid {
+                grid-template-columns: 2fr 1fr 1fr;
+            }
+            .hero-buttons { flex-direction: row; }
+            .hero-buttons .btn { width: auto; }
         }
     </style>
     <!-- فافيكون اللوجو في تاب المتصفح -->

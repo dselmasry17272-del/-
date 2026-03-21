@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>أدوية الدواجن</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="icon" type="image/png" href="logo.png" />
+<link rel="stylesheet" href="assets/site.css" />
+<style>
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .card{border-radius:16px}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">
+      <img src="logo.png" alt="لوجو المصرية العالمية للأدوية البيطرية" class="logo-img" />
+      <div class="logo-text">
+        <h1>المصرية العالمية</h1>
+        <span>للأدوية البيطرية</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="products.html">المنتجات</a></li>
+      <li><a href="blog.html">المدونة</a></li>
+      <li><a href="reviews.html">التقييمات</a></li>
+      <li><a href="checkout.html" class="nav-cta">السلة (<span data-cart-count style="display:none"></span>)</a></li>
+      <li><a href="contact.html">تواصل معنا</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+    <div class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <div class="container">
+    <div class="pill">🐔 أدوية الدواجن • مستورد</div>
+    <h1>أدوية الدواجن</h1>
+    <p>منتجات عالمية</p>
+    <div class="breadcrumbs">
+      <a href="index.html">الرئيسية</a> / <a href="products.html">المنتجات</a> / <span>الدواجن (مستورد)</span>
+    </div>
+  </div>
+</header>
+
+<main class="section">
+  <div class="container">
+    <div class="card" style="grid-column:span 12;background:#fff8e1;border:1px solid rgba(249,168,37,.35);margin-bottom:14px">
+      <strong>قالب تعبئة المنتجات:</strong>
+      عدّل داخل كل كارت: اسم المنتج، التركيب، الاستخدام، السعر، الخصم، التقييم، وصورة المنتج (إن وُجدت).
+      وفي زر <strong>أضف للسلة</strong> عدّل القيم:
+      <code>data-id</code> (فريد)، <code>data-name</code>، <code>data-category</code>، <code>data-price</code> (السعر النهائي بعد الخصم).
+      عرض الكروت للجمهور فقط ولا يمكن للعميل تعديلها من الواجهة.
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(12,1fr)">
+
+<div class="card product-card">
+<div><strong>منتج 1</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_1" data-name="منتج 1" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 2</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_2" data-name="منتج 2" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 3</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_3" data-name="منتج 3" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 4</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_4" data-name="منتج 4" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 5</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_5" data-name="منتج 5" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 6</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_6" data-name="منتج 6" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 7</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_7" data-name="منتج 7" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 8</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_8" data-name="منتج 8" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 9</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_9" data-name="منتج 9" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+
+<div class="card product-card">
+<div><strong>منتج 10</strong></div>
+<div class="muted">تركيبة</div>
+<div class="muted">استخدام</div>
+<div class="muted">السعر</div>
+<div class="muted">خصم</div>
+<div class="muted">⭐ تقييم</div>
+<button class="btn btn-primary btn-block" data-add-to-cart data-id="poultry_import_10" data-name="منتج 10" data-category="دواجن/مستورد" data-price="0">أضف للسلة</button>
+</div>
+
+</div>
+
+</div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <img src="logo.png" alt="لوجو" class="footer-logo-img" />
+        <h3>المصرية العالمية للأدوية البيطرية</h3>
+        <p>شركة مصرية متخصصة في تصنيع واستيراد الأدوية البيطرية لخدمة قطاع الدواجن والثروة الحيوانية والحيوانات الأليفة.</p>
+      </div>
+      <div class="footer-links">
+        <h4>روابط</h4>
+        <ul>
+          <li><a href="products.html">المنتجات</a></li>
+          <li><a href="blog.html">المدونة</a></li>
+          <li><a href="reviews.html">التقييمات</a></li>
+          <li><a href="contact.html">تواصل معنا</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>السلة</h4>
+        <ul>
+          <li><a href="checkout.html">فتح السلة</a></li>
+          <li><a href="dashboard.html">تحليلات</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 المصرية العالمية للأدوية البيطرية - جميع الحقوق محفوظة</p>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/201008226733" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<script src="assets/site.js"></script>
+
+</body>
+</html>
