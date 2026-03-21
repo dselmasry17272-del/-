@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>تواصل معنا | المصرية العالمية للأدوية البيطرية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="stylesheet" href="assets/site.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="لوجو المصرية العالمية للأدوية البيطرية" class="logo-img" />
+          <div class="logo-text">
+            <h1>المصرية العالمية</h1>
+            <span>للأدوية البيطرية</span>
+          </div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="products.html">المنتجات</a></li>
+          <li><a href="blog.html">المدونة</a></li>
+          <li><a href="reviews.html">التقييمات</a></li>
+          <li><a href="checkout.html" class="nav-cta">السلة (<span data-cart-count style="display:none"></span>)</a></li>
+          <li><a href="contact.html">تواصل معنا</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+      </div>
+    </nav>
+
+    <header class="page-hero">
+      <div class="container">
+        <div class="pill"><i class="fa-solid fa-headset"></i> خدمة العملاء</div>
+        <h1>تواصل معنا</h1>
+        <p>أرسل استفسارك أو طلبك وسنرد في أقرب وقت.</p>
+        <div class="breadcrumbs">
+          <a href="index.html">الرئيسية</a> / <span>تواصل</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="section page-split-layout">
+      <div class="container">
+        <div class="grid">
+          <section class="card contact-form-col">
+            <h3 style="margin-top:0"><i class="fa-solid fa-paper-plane"></i> نموذج التواصل</h3>
+            <form id="contactForm">
+              <div class="form-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <label style="font-weight:800">الاسم</label>
+                  <input required name="name" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" placeholder="الاسم الكامل" />
+                </div>
+                <div>
+                  <label style="font-weight:800">رقم الهاتف</label>
+                  <input required name="phone" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" placeholder="01xxxxxxxxx" />
+                </div>
+              </div>
+              <div style="margin-top:12px">
+                <label style="font-weight:800">التخصص</label>
+                <select required name="role" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit">
+                  <option value="">اختر تخصصك</option>
+                  <option>طبيب بيطري</option>
+                  <option>مربي دواجن</option>
+                  <option>مربي ماشية</option>
+                  <option>صاحب حيوانات أليفة</option>
+                  <option>صيدلية بيطرية</option>
+                  <option>موزع أدوية</option>
+                  <option>أخرى</option>
+                </select>
+              </div>
+              <div style="margin-top:12px">
+                <label style="font-weight:800">رسالتك</label>
+                <textarea required name="message" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;min-height:120px" placeholder="اكتب استفسارك هنا..."></textarea>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+                <button class="btn btn-primary" type="submit">إرسال</button>
+                <a class="btn btn-outline" href="https://wa.me/201008226733" target="_blank">واتساب مباشر</a>
+              </div>
+              <p id="contactResult" class="muted" style="margin-top:12px"></p>
+            </form>
+          </section>
+
+          <aside class="card contact-aside-col">
+            <h3 style="margin-top:0">بيانات التواصل</h3>
+            <div class="muted" style="display:flex;flex-direction:column;gap:10px">
+              <div><strong>واتساب:</strong> 01008226733</div>
+              <div><strong>البريد:</strong> info@eivp-eg.com</div>
+              <div><strong>الهاتف:</strong> 01008226733</div>
+              <div><strong>العنوان:</strong> مصر - [شارع الشعراوي - ابوالمطامير - البحيرة]</div>
+            </div>
+            <hr style="border:none;border-top:1px solid #eee;margin:18px 0" />
+            <p class="muted">ملاحظة: هذا نموذج ثابت (Static). عند توفر استضافة/باك-إند يمكن ربطه بإيميل أو لوحة إدارة.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-about">
+            <img src="logo.png" alt="لوجو" class="footer-logo-img" />
+            <h3>المصرية العالمية للأدوية البيطرية</h3>
+            <p>شركة مصرية متخصصة في تصنيع واستيراد الأدوية البيطرية لخدمة قطاع الدواجن والثروة الحيوانية والحيوانات الأليفة.</p>
+          </div>
+          <div class="footer-links">
+            <h4>روابط</h4>
+            <ul>
+              <li><a href="products.html">المنتجات</a></li>
+              <li><a href="blog.html">المدونة</a></li>
+              <li><a href="reviews.html">التقييمات</a></li>
+              <li><a href="checkout.html">السلة</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>تحليلات</h4>
+            <ul>
+              <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2025 المصرية العالمية للأدوية البيطرية - جميع الحقوق محفوظة</p>
+        </div>
+      </div>
+    </footer>
+
+    <a href="https://wa.me/201008226733" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="assets/site.js"></script>
+    <script>
+      document.getElementById('contactForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const payload = Object.fromEntries(data.entries());
+        localStorage.setItem('eivp_last_contact_v1', JSON.stringify({ ...payload, at: new Date().toISOString() }));
+        document.getElementById('contactResult').textContent = '✅ تم تسجيل رسالتك محلياً (نموذج ثابت). يمكننا ربطه بإرسال فعلي عند إضافة باك-إند.';
+        e.target.reset();
+      });
+    </script>
+  </body>
+</html>
+

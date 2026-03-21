@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>البيع / السلة | المصرية العالمية للأدوية البيطرية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="stylesheet" href="assets/site.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="لوجو المصرية العالمية للأدوية البيطرية" class="logo-img" />
+          <div class="logo-text">
+            <h1>المصرية العالمية</h1>
+            <span>للأدوية البيطرية</span>
+          </div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="products.html">المنتجات</a></li>
+          <li><a href="blog.html">المدونة</a></li>
+          <li><a href="reviews.html">التقييمات</a></li>
+          <li><a href="checkout.html" class="nav-cta">السلة (<span data-cart-count style="display:none"></span>)</a></li>
+          <li><a href="contact.html">تواصل معنا</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+      </div>
+    </nav>
+
+    <header class="page-hero">
+      <div class="container">
+        <div class="pill"><i class="fa-solid fa-cart-shopping"></i> صفحة البيع</div>
+        <h1>السلة وإتمام الطلب (نموذج)</h1>
+        <p>هذه نسخة ثابتة تعمل محلياً. يمكن ربط الدفع/الطلبات لاحقاً حسب الاستضافة.</p>
+        <div class="breadcrumbs">
+          <a href="index.html">الرئيسية</a> / <span>السلة</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="section page-split-layout">
+      <div class="container">
+        <div class="grid">
+          <section class="card checkout-cart-col">
+            <h3 style="margin-top:0">محتويات السلة</h3>
+            <div id="cartList" class="muted">—</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+              <a class="btn btn-outline" href="products.html">متابعة التسوق</a>
+              <button id="clearCart" class="btn btn-outline" type="button">تفريغ السلة</button>
+              <div id="clearCartConfirmBox" class="muted" style="display:none;align-items:center;gap:8px">
+                <span>⚠️ تأكيد التفريغ؟</span>
+                <button id="confirmClearCart" class="btn" type="button" style="padding:8px 14px;background:#d32f2f;color:#fff;border:1px solid #b71c1c;box-shadow:none">
+                  اضغط هنا
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <aside class="card checkout-form-col">
+            <h3 style="margin-top:0">بيانات الطلب</h3>
+            <form id="orderForm">
+              <div class="form-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <label style="font-weight:800">الاسم</label>
+                  <input required name="name" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" />
+                </div>
+                <div>
+                  <label style="font-weight:800">الهاتف</label>
+                  <input required name="phone" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" />
+                </div>
+              </div>
+              <div style="margin-top:12px">
+                <label style="font-weight:800">العنوان</label>
+                <input required name="address" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" />
+              </div>
+              <div style="margin-top:12px">
+                <label style="font-weight:800">ملاحظات</label>
+                <textarea name="notes" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;min-height:90px"></textarea>
+              </div>
+              <div class="card" style="background:var(--light-bg);box-shadow:none;margin-top:12px">
+                <div style="display:flex;justify-content:space-between;gap:10px">
+                  <strong>الإجمالي</strong>
+                  <strong id="total">0</strong>
+                </div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+                <button class="btn btn-primary" type="submit">تأكيد الطلب</button>
+                <a class="btn btn-outline" href="contact.html">استفسار</a>
+              </div>
+              <p id="orderResult" class="muted" style="margin-top:12px"></p>
+            </form>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-about">
+            <img src="logo.png" alt="لوجو" class="footer-logo-img" />
+            <h3>المصرية العالمية للأدوية البيطرية</h3>
+            <p>شركة مصرية متخصصة في تصنيع واستيراد الأدوية البيطرية لخدمة قطاع الدواجن والثروة الحيوانية والحيوانات الأليفة.</p>
+          </div>
+          <div class="footer-links">
+            <h4>روابط</h4>
+            <ul>
+              <li><a href="products.html">المنتجات</a></li>
+              <li><a href="reviews.html">التقييمات</a></li>
+              <li><a href="contact.html">تواصل معنا</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>تحليلات</h4>
+            <ul>
+              <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2025 المصرية العالمية للأدوية البيطرية - جميع الحقوق محفوظة</p>
+        </div>
+      </div>
+    </footer>
+
+    <a href="https://wa.me/201008226733" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="assets/site.js"></script>
+    <script>
+      const CHECKOUT_CART_KEY = 'eivp_cart_v1';
+      const EASY_ORDER_URL = 'https://dselmasry17272-del.github.io/-/';
+      const listEl = document.getElementById('cartList');
+      const totalEl = document.getElementById('total');
+      const resultEl = document.getElementById('orderResult');
+      const clearCartConfirmBox = document.getElementById('clearCartConfirmBox');
+      const confirmClearCartBtn = document.getElementById('confirmClearCart');
+      let clearCartPending = false;
+
+      function readCart() {
+        try {
+          const raw = localStorage.getItem(CHECKOUT_CART_KEY);
+          const arr = raw ? JSON.parse(raw) : [];
+          return Array.isArray(arr) ? arr : [];
+        } catch {
+          return [];
+        }
+      }
+      function writeCart(arr) {
+        localStorage.setItem(CHECKOUT_CART_KEY, JSON.stringify(arr));
+        if (typeof updateCartBadges === 'function') updateCartBadges();
+      }
+      function clearCartStorage() {
+        // تفريغ قوي لتفادي أي تعارض مع كاش/نسخ قديمة.
+        localStorage.removeItem(CHECKOUT_CART_KEY);
+        localStorage.setItem(CHECKOUT_CART_KEY, '[]');
+        if (typeof clearCart === 'function') clearCart();
+        if (typeof updateCartBadges === 'function') updateCartBadges();
+        document.querySelectorAll('[data-cart-count]').forEach((el) => {
+          el.textContent = '';
+          el.style.display = 'none';
+        });
+      }
+      function removeItemFromCart(id) {
+        const current = readCart();
+        const next = current.filter((item) => item.id !== id);
+        writeCart(next);
+      }
+      function money(n) {
+        return `${Number(n || 0).toFixed(0)} ج.م`;
+      }
+      function render() {
+        const cart = readCart();
+        if (!cart.length) {
+          listEl.innerHTML = '<p class="muted">السلة فارغة. ابدأ من صفحة المنتجات.</p>';
+          totalEl.textContent = money(0);
+          return;
+        }
+        const total = cart.reduce((sum, x) => sum + (Number(x.price) || 0) * (Number(x.qty) || 0), 0);
+        totalEl.textContent = money(total);
+        listEl.innerHTML = cart
+          .map(
+            (x) => `
+              <div class="card" style="background:var(--light-bg);box-shadow:none;margin-bottom:12px">
+                <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+                  <div>
+                    <strong>${x.name}</strong>
+                    <div class="muted">${x.category || ''}</div>
+                  </div>
+                  <div style="text-align:left">
+                    <div><strong>${money(x.price)}</strong></div>
+                    <div class="muted">الكمية: ${x.qty}</div>
+                    <button
+                      class="btn btn-outline"
+                      type="button"
+                      data-remove-item="${x.id}"
+                      style="margin-top:8px;padding:6px 12px"
+                    >
+                      <i class="fa-solid fa-trash"></i>
+                      إزالة
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `
+          )
+          .join('');
+      }
+
+      document.getElementById('clearCart').addEventListener('click', () => {
+        clearCartPending = true;
+        clearCartConfirmBox.style.display = 'inline-flex';
+      });
+
+      confirmClearCartBtn.addEventListener('click', () => {
+        if (!clearCartPending) return;
+        clearCartStorage();
+        render();
+        clearCartPending = false;
+        clearCartConfirmBox.style.display = 'none';
+        resultEl.textContent = '✅ تم تفريغ السلة بنجاح.';
+      });
+
+      listEl.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('[data-remove-item]');
+        if (!removeBtn) return;
+        const itemId = removeBtn.getAttribute('data-remove-item');
+        if (!itemId) return;
+        removeItemFromCart(itemId);
+        render();
+        clearCartPending = false;
+        clearCartConfirmBox.style.display = 'none';
+        resultEl.textContent = '✅ تم حذف المنتج من السلة.';
+      });
+
+      document.getElementById('orderForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cart = readCart();
+        if (!cart.length) {
+          resultEl.textContent = '⚠️ السلة فارغة.';
+          return;
+        }
+        const data = new FormData(e.target);
+        const payload = Object.fromEntries(data.entries());
+        const order = { ...payload, cart, at: new Date().toISOString() };
+        localStorage.setItem('eivp_last_order_v1', JSON.stringify(order));
+        resultEl.textContent = '✅ جاري تحويلك لإتمام الطلب عبر Easy Order...';
+        e.target.reset();
+        clearCartPending = false;
+        clearCartConfirmBox.style.display = 'none';
+        clearCartStorage();
+        render();
+        setTimeout(() => {
+          window.location.href = EASY_ORDER_URL;
+        }, 350);
+      });
+
+      render();
+    </script>
+  </body>
+</html>
+
