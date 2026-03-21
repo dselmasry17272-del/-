@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>تقييمات المنتجات | المصرية العالمية للأدوية البيطرية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="stylesheet" href="assets/site.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="لوجو المصرية العالمية للأدوية البيطرية" class="logo-img" />
+          <div class="logo-text">
+            <h1>المصرية العالمية</h1>
+            <span>للأدوية البيطرية</span>
+          </div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="products.html">المنتجات</a></li>
+          <li><a href="blog.html">المدونة</a></li>
+          <li><a href="reviews.html">التقييمات</a></li>
+          <li><a href="checkout.html" class="nav-cta">السلة (<span data-cart-count style="display:none"></span>)</a></li>
+          <li><a href="contact.html">تواصل معنا</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+      </div>
+    </nav>
+
+    <header class="page-hero">
+      <div class="container">
+        <div class="pill"><i class="fa-solid fa-star"></i> آراء العملاء</div>
+        <h1>تقييمات المنتجات</h1>
+        <p>نموذج صفحة تقييمات (Static + تخزين محلي). يمكن ربطها بقاعدة بيانات لاحقاً.</p>
+        <div class="breadcrumbs">
+          <a href="index.html">الرئيسية</a> / <span>التقييمات</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="section">
+      <div class="container">
+        <div class="grid">
+          <section class="card" style="grid-column: span 6;">
+            <h3 style="margin-top:0">إضافة تقييم</h3>
+            <form id="reviewForm">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <label style="font-weight:800">اسم المنتج</label>
+                  <input required name="product" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" placeholder="مثال: فيتامينات داعمة للمناعة" />
+                </div>
+                <div>
+                  <label style="font-weight:800">الاسم</label>
+                  <input required name="name" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" placeholder="اسمك" />
+                </div>
+              </div>
+              <div style="margin-top:12px">
+                <label style="font-weight:800">التقييم</label>
+                <select required name="rating" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit">
+                  <option value="">اختر</option>
+                  <option value="5">★★★★★ (5)</option>
+                  <option value="4">★★★★☆ (4)</option>
+                  <option value="3">★★★☆☆ (3)</option>
+                  <option value="2">★★☆☆☆ (2)</option>
+                  <option value="1">★☆☆☆☆ (1)</option>
+                </select>
+              </div>
+              <div style="margin-top:12px">
+                <label style="font-weight:800">ملاحظات</label>
+                <textarea required name="text" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;min-height:120px" placeholder="اكتب تجربتك..."></textarea>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+                <button class="btn btn-primary" type="submit">حفظ التقييم</button>
+                <a class="btn btn-outline" href="products.html">العودة للمنتجات</a>
+              </div>
+              <p id="reviewResult" class="muted" style="margin-top:12px"></p>
+            </form>
+          </section>
+
+          <section class="card" style="grid-column: span 6;">
+            <h3 style="margin-top:0">أحدث التقييمات</h3>
+            <div id="reviewsList" class="muted">—</div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-about">
+            <img src="logo.png" alt="لوجو" class="footer-logo-img" />
+            <h3>المصرية العالمية للأدوية البيطرية</h3>
+            <p>شركة مصرية متخصصة في تصنيع واستيراد الأدوية البيطرية لخدمة قطاع الدواجن والثروة الحيوانية والحيوانات الأليفة.</p>
+          </div>
+          <div class="footer-links">
+            <h4>روابط</h4>
+            <ul>
+              <li><a href="products.html">المنتجات</a></li>
+              <li><a href="blog.html">المدونة</a></li>
+              <li><a href="contact.html">تواصل معنا</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>تحليلات</h4>
+            <ul>
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <li><a href="checkout.html">السلة</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2025 المصرية العالمية للأدوية البيطرية - جميع الحقوق محفوظة</p>
+        </div>
+      </div>
+    </footer>
+
+    <a href="https://wa.me/201008226733" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="assets/site.js"></script>
+    <script>
+      const KEY = 'eivp_reviews_v1';
+      const listEl = document.getElementById('reviewsList');
+      const resultEl = document.getElementById('reviewResult');
+
+      function readReviews() {
+        try {
+          const raw = localStorage.getItem(KEY);
+          const arr = raw ? JSON.parse(raw) : [];
+          return Array.isArray(arr) ? arr : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function writeReviews(arr) {
+        localStorage.setItem(KEY, JSON.stringify(arr));
+      }
+
+      function stars(n) {
+        const full = '★'.repeat(n);
+        const empty = '☆'.repeat(5 - n);
+        return `<span class="stars">${full}${empty}</span>`;
+      }
+
+      function render() {
+        const items = readReviews().slice().reverse();
+        if (!items.length) {
+          listEl.innerHTML = '<p class="muted">لا توجد تقييمات بعد.</p>';
+          return;
+        }
+        listEl.innerHTML = items
+          .slice(0, 10)
+          .map(
+            (x) => `
+              <div class="card" style="box-shadow:none;background:var(--light-bg);margin-bottom:12px">
+                <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+                  <div><strong>${x.product}</strong> — ${stars(Number(x.rating) || 0)}</div>
+                  <div class="muted">${new Date(x.at).toLocaleString('ar-EG')}</div>
+                </div>
+                <div class="muted" style="margin-top:8px">${x.text}</div>
+                <div class="muted" style="margin-top:8px"><strong>بواسطة:</strong> ${x.name}</div>
+              </div>
+            `
+          )
+          .join('');
+      }
+
+      document.getElementById('reviewForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const payload = Object.fromEntries(data.entries());
+        const arr = readReviews();
+        arr.push({ ...payload, at: new Date().toISOString() });
+        writeReviews(arr);
+        resultEl.textContent = '✅ تم حفظ التقييم محلياً.';
+        e.target.reset();
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>
+
