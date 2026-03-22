@@ -20,6 +20,25 @@ window.addEventListener('resize', () => {
   }
 });
 
+/** توحيد الاسم التجاري إن وُجدت نسخ قديمة في HTML */
+function fixCompanyBrandingTypos() {
+  const wrong = 'المصرية العالمية';
+  const wrongAlt = 'المصرية العالميه';
+  const right = 'المصرية الدولية';
+  function fixText(t) {
+    if (!t) return t;
+    return String(t).replaceAll(wrongAlt, right).replaceAll(wrong, right);
+  }
+  document.title = fixText(document.title);
+  document.querySelectorAll('.logo-text h1, .logo-text span, .footer h3').forEach((el) => {
+    el.textContent = fixText(el.textContent);
+  });
+  document.querySelectorAll('meta[content]').forEach((m) => {
+    const c = m.getAttribute('content');
+    if (c && (c.includes(wrong) || c.includes(wrongAlt))) m.setAttribute('content', fixText(c));
+  });
+}
+
 /* Cart (localStorage) */
 const CART_KEY = 'eivp_cart_v1';
 const PRODUCT_EDIT_KEY = 'eivp_product_edit_v1';
@@ -492,6 +511,7 @@ function maybeInitProductEditors() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  fixCompanyBrandingTypos();
   updateCartBadges();
   try {
     if (new URLSearchParams(location.search).get('admin') !== '1') {
