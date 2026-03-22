@@ -108,6 +108,76 @@ function computeDiscountedPrice(price, discountPercent) {
   return Math.max(0, Math.round(discounted));
 }
 
+/** يستخرج أول رقم عشري من نص (لأسطر السعر/الخصم في الكارت) */
+function parseFirstNumberFromKvText(text) {
+  const s = String(text || '').replace(/\s/g, ' ');
+  const m = s.match(/(\d+(?:[.,]\d+)?)/);
+  if (!m) return NaN;
+  return Number(m[1].replace(',', '.'));
+}
+
+/** يقرأ من أسطر المنتج: السعر = قبل الخصم، الخصم = النسبة % */
+function parseProductCardPriceAndDiscount(card) {
+  const meta = card.querySelector('.product-meta');
+  if (!meta) return { basePrice: NaN, discountPct: 0, priceKv: null, discountKv: null };
+
+  let basePrice = NaN;
+  let discountPct = 0;
+  let priceKv = null;
+  let discountKv = null;
+
+  for (const kv of meta.querySelectorAll('.kv')) {
+    if (kv.getAttribute('data-auto-final') === '1') continue;
+    const lab = kv.querySelector('span')?.textContent?.trim() || '';
+    if (lab.includes('الخصم')) {
+      discountKv = kv;
+      const p = parseFirstNumberFromKvText(kv.textContent);
+      if (!Number.isNaN(p)) discountPct = p;
+    } else if (lab.includes('السعر') && !lab.includes('بعد')) {
+      priceKv = kv;
+      basePrice = parseFirstNumberFromKvText(kv.textContent);
+    }
+  }
+  return { basePrice, discountPct, priceKv, discountKv };
+}
+
+/**
+ * يعرض «بعد الخصم» تلقائياً بجوار السعر والخصم، ويحدّث زر السلة بالسعر النهائي.
+ * سطر «السعر» في HTML = السعر قبل الخصم (السلة تستخدم السعر بعد الخصم تلقائياً).
+ * لا يُستدعى مع ?admin=1 حتى يعمل محرّر التعديل من الكارت بشكل صحيح.
+ */
+function initProductCardFinalPrices() {
+  document.querySelectorAll('.product-card').forEach((card) => {
+    const meta = card.querySelector('.product-meta');
+    if (!meta) return;
+
+    meta.querySelectorAll('.kv[data-auto-final="1"]').forEach((el) => el.remove());
+
+    const { basePrice, discountPct, priceKv, discountKv } = parseProductCardPriceAndDiscount(card);
+    if (Number.isNaN(basePrice)) return;
+
+    const final = computeDiscountedPrice(basePrice, discountPct);
+    const row = document.createElement('div');
+    row.className = 'kv kv-final-price';
+    row.setAttribute('data-auto-final', '1');
+    row.innerHTML = `<span>بعد الخصم</span><strong class="kv-final-price-value">${fmtMoney(final)}</strong>`;
+
+    if (discountKv) {
+      discountKv.insertAdjacentElement('afterend', row);
+    } else if (priceKv) {
+      priceKv.insertAdjacentElement('afterend', row);
+    } else {
+      meta.appendChild(row);
+    }
+
+    const btn = card.querySelector('[data-add-to-cart]');
+    if (btn) {
+      btn.setAttribute('data-price', String(final));
+      btn.setAttribute('data-discount', String(discountPct));
+    }
+  });
+}
+
 function getInitialText(card) {
   // Best-effort extraction from current card markup.
   const btn = card.querySelector('[data-add-to-cart]');
@@ -173,10 +243,17 @@ function initProductEditors() {
     const id = btn.getAttribute('data-id') || '';
     if (!id) return;
 
-    const initialImg = card.querySelector('img')?.getAttribute('src') || 'logo.png';
-    const initialPrice = Number(btn.getAttribute('data-price') || 0);
+    const initialImg = card.querySelector('img')?.getAttribute('src') || 'assets/product-placeholder.svg';
+    const { basePrice, discountPct } = parseProductCardPriceAndDiscount(card);
+    const initialPrice = !Number.isNaN(basePrice)
+      ? basePrice
+      : Number(btn.getAttribute('data-price') || 0);
     const { name: initialName, composition: initialComposition, usage: initialUsage } = getInitialText(card);
-    const initialDiscount = Number(btn.getAttribute('data-discount')) || parseInitialDiscount(card) || 0;
+    const dAttr = btn.getAttribute('data-discount');
+    const initialDiscount =
+      dAttr !== null && dAttr !== ''
+        ? Number(dAttr) || 0
+        : discountPct || parseInitialDiscount(card) || 0;
 
     const saved = readProductEdit(id) || {};
     const state = {
@@ -210,7 +287,7 @@ function initProductEditors() {
     const imageInput = document.createElement('input');
     imageInput.type = 'text';
     imageInput.value = state.imageSrc;
-    imageInput.placeholder = 'مثال: logo.png أو مسار/لينك للصورة';
+    imageInput.placeholder = 'مثال: https://… أو images/منتج.jpg';
 
     const nameLabel = document.createElement('label');
     nameLabel.textContent = 'اسم المنتج';
@@ -324,7 +401,7 @@ function initProductEditors() {
 
     // Keep data attributes in sync for cart.
     function syncToCardAndButton() {
-      const imageSrc = (imageInput.value || '').trim() || 'logo.png';
+      const imageSrc = (imageInput.value || '').trim() || 'assets/product-placeholder.svg';
       preview.src = imageSrc;
 
       const name = (nameInput.value || '').trim() || 'منتج';
@@ -381,7 +458,7 @@ function initProductEditors() {
 
     saveBtn.addEventListener('click', () => {
       const payload = {
-        imageSrc: (imageInput.value || '').trim() || 'logo.png',
+        imageSrc: (imageInput.value || '').trim() || 'assets/product-placeholder.svg',
         name: (nameInput.value || '').trim() || 'منتج',
         composition: compInput.value || '',
         usage: usageInput.value || '',
@@ -416,6 +493,13 @@ function maybeInitProductEditors() {
 
 document.addEventListener('DOMContentLoaded', () => {
   updateCartBadges();
+  try {
+    if (new URLSearchParams(location.search).get('admin') !== '1') {
+      initProductCardFinalPrices();
+    }
+  } catch {
+    /* ignore */
+  }
   initBlog();
   maybeInitProductEditors();
 });

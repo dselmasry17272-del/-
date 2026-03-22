@@ -141,6 +141,15 @@ a{text-decoration:none;color:inherit}
 .product-meta{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
 .kv{display:flex;gap:8px;align-items:center;background:var(--light-bg);padding:8px 10px;border-radius:12px;font-weight:800;font-size:.9rem}
 .kv span{font-weight:700;color:var(--gray-text)}
+.kv.kv-final-price{
+  border:1px solid rgba(13,71,161,.22);
+  background:linear-gradient(135deg, rgba(232,245,233,.75), rgba(227,242,253,.9));
+}
+.kv.kv-final-price .kv-final-price-value{
+  color:var(--secondary);
+  font-weight:900;
+  margin-right:2px;
+}
 .stars{color:var(--gold)}
 
 /* Product editor (for editable products) */

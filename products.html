@@ -80,13 +80,13 @@
         <!--
           إضافة منتج جديد (للتاجر):
           1) انسخ كتلة <article class="card product-card"> … </article> كاملة من أسفل هذا التعليق.
-          2) غيّر: الصورة (src)، العنوان <h3>، السطر المميز، التركيب/الاستخدام، أسطر السعر والخصم والتقييم.
-          3) على زر «أضف للسلة»: data-id فريد (إنجليزي بدون مسافات)، data-name، data-category، data-price (السعر بعد الخصم)، data-discount (اختياري).
+          2) غيّر: في <img class="product-img"> ضع رابط الصورة الحقيقية أو مسار ملف (مثل images/x.jpg)، والعنوان <h3>، السطر المميز، التركيب/الاستخدام، أسطر السعر والخصم والتقييم.
+          3) سطر «السعر» في الكارت = السعر قبل الخصم؛ «بعد الخصم» يُحسب تلقائياً في الموقع ويُحدَّث زر السلة. على الزر: data-id، data-name، data-category (data-price/data-discount تُحدَّث تلقائياً عند العرض).
           العميل على products.html العادي لا يرى حقول تعديل؛ التعديل السريع من المتصفح (نموذج فقط): افتح نفس الصفحة بإضافة ?admin=1 في نهاية الرابط — لا تشارك هذا الرابط مع العملاء.
         -->
         <div class="grid">
           <article class="card product-card">
-            <img class="product-img" src="logo.png" alt="صورة المنتج" loading="lazy" />
+            <img class="product-img" src="assets/product-placeholder.svg" alt="صورة المنتج" loading="lazy" />
             <h3>فيتامينات داعمة للمناعة</h3>
             <div class="muted">دواجن • محلي</div>
             <div class="product-fields">
@@ -94,17 +94,17 @@
               <div class="field-line"><span class="field-label">الاستخدام:</span> <span class="field-value">—</span></div>
             </div>
             <div class="product-meta">
-              <div class="kv"><span>السعر</span> 250 ج.م</div>
+              <div class="kv"><span>السعر</span> 300 ج.م</div>
               <div class="kv"><span>الخصم</span> 10%</div>
               <div class="kv"><span>التقييم</span> <span class="stars">★★★★☆</span></div>
             </div>
-            <button class="btn btn-primary btn-block" data-add-to-cart data-id="vit_poultry_local_1" data-name="فيتامينات داعمة للمناعة" data-category="دواجن/محلي" data-price="250">
+            <button class="btn btn-primary btn-block" data-add-to-cart data-id="vit_poultry_local_1" data-name="فيتامينات داعمة للمناعة" data-category="دواجن/محلي" data-price="270" data-discount="10">
               أضف للسلة
             </button>
           </article>
 
           <article class="card product-card">
-            <img class="product-img" src="logo.png" alt="صورة المنتج" loading="lazy" />
+            <img class="product-img" src="assets/product-placeholder.svg" alt="صورة المنتج" loading="lazy" />
             <h3>مضاد حيوي واسع المدى</h3>
             <div class="muted">ثروة حيوانية • مستورد</div>
             <div class="product-fields">
@@ -116,13 +116,13 @@
               <div class="kv"><span>الخصم</span> 0%</div>
               <div class="kv"><span>التقييم</span> <span class="stars">★★★★★</span></div>
             </div>
-            <button class="btn btn-primary btn-block" data-add-to-cart data-id="ab_livestock_import_1" data-name="مضاد حيوي واسع المدى" data-category="ثروة/مستورد" data-price="420">
+            <button class="btn btn-primary btn-block" data-add-to-cart data-id="ab_livestock_import_1" data-name="مضاد حيوي واسع المدى" data-category="ثروة/مستورد" data-price="420" data-discount="0">
               أضف للسلة
             </button>
           </article>
 
           <article class="card product-card">
-            <img class="product-img" src="logo.png" alt="صورة المنتج" loading="lazy" />
+            <img class="product-img" src="assets/product-placeholder.svg" alt="صورة المنتج" loading="lazy" />
             <h3>مكمل لصحة الجلد والفراء</h3>
             <div class="muted">حيوانات أليفة • محلي</div>
             <div class="product-fields">
@@ -130,11 +130,11 @@
               <div class="field-line"><span class="field-label">الاستخدام:</span> <span class="field-value">—</span></div>
             </div>
             <div class="product-meta">
-              <div class="kv"><span>السعر</span> 310 ج.م</div>
+              <div class="kv"><span>السعر</span> 400 ج.م</div>
               <div class="kv"><span>الخصم</span> 5%</div>
               <div class="kv"><span>التقييم</span> <span class="stars">★★★★☆</span></div>
             </div>
-            <button class="btn btn-primary btn-block" data-add-to-cart data-id="pet_skin_local_1" data-name="مكمل لصحة الجلد والفراء" data-category="أليفة/محلي" data-price="310">
+            <button class="btn btn-primary btn-block" data-add-to-cart data-id="pet_skin_local_1" data-name="مكمل لصحة الجلد والفراء" data-category="أليفة/محلي" data-price="380" data-discount="5">
               أضف للسلة
             </button>
           </article>
