@@ -135,11 +135,20 @@
 
     <script src="assets/site.js"></script>
     <script>
+      function mergeWithTimestamp(payload) {
+        const out = {};
+        Object.keys(payload || {}).forEach((k) => {
+          out[k] = payload[k];
+        });
+        out.at = new Date().toISOString();
+        return out;
+      }
+
       document.getElementById('contactForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const data = new FormData(e.target);
         const payload = Object.fromEntries(data.entries());
-        localStorage.setItem('eivp_last_contact_v1', JSON.stringify({ ...payload, at: new Date().toISOString() }));
+        localStorage.setItem('eivp_last_contact_v1', JSON.stringify(mergeWithTimestamp(payload)));
         document.getElementById('contactResult').textContent = '✅ تم تسجيل رسالتك محلياً (نموذج ثابت). يمكننا ربطه بإرسال فعلي عند إضافة باك-إند.';
         e.target.reset();
       });

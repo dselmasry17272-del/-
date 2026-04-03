@@ -135,7 +135,7 @@
           const raw = localStorage.getItem(KEY);
           const arr = raw ? JSON.parse(raw) : [];
           return Array.isArray(arr) ? arr : [];
-        } catch {
+        } catch (err) {
           return [];
         }
       }
@@ -178,7 +178,12 @@
         const data = new FormData(e.target);
         const payload = Object.fromEntries(data.entries());
         const arr = readReviews();
-        arr.push({ ...payload, at: new Date().toISOString() });
+        const item = {};
+        Object.keys(payload || {}).forEach((k) => {
+          item[k] = payload[k];
+        });
+        item.at = new Date().toISOString();
+        arr.push(item);
         writeReviews(arr);
         resultEl.textContent = '✅ تم حفظ التقييم محلياً.';
         e.target.reset();

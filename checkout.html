@@ -148,7 +148,7 @@
           const raw = localStorage.getItem(CHECKOUT_CART_KEY);
           const arr = raw ? JSON.parse(raw) : [];
           return Array.isArray(arr) ? arr : [];
-        } catch {
+        } catch (err) {
           return [];
         }
       }
@@ -248,7 +248,12 @@
         }
         const data = new FormData(e.target);
         const payload = Object.fromEntries(data.entries());
-        const order = { ...payload, cart, at: new Date().toISOString() };
+        const order = {};
+        Object.keys(payload || {}).forEach((k) => {
+          order[k] = payload[k];
+        });
+        order.cart = cart;
+        order.at = new Date().toISOString();
         localStorage.setItem('eivp_last_order_v1', JSON.stringify(order));
         resultEl.textContent = '✅ جاري تحويلك لإتمام الطلب عبر Easy Order...';
         e.target.reset();

@@ -1,4 +1,22 @@
 /* Global UI */
+function safeClosest(el, selector) {
+  if (!el || typeof el.closest !== 'function') return null;
+  return el.closest(selector);
+}
+
+function coalesce(value, fallback) {
+  return value === null || value === undefined ? fallback : value;
+}
+
+function replaceAllPlain(text, searchValue, replaceValue) {
+  return String(text).split(searchValue).join(replaceValue);
+}
+
+function textContentTrim(el) {
+  if (!el || typeof el.textContent !== 'string') return '';
+  return el.textContent.trim();
+}
+
 function toggleMenu() {
   const el = document.getElementById('navLinks');
   if (!el) return;
@@ -7,16 +25,20 @@ function toggleMenu() {
 
 document.addEventListener('click', (e) => {
   const nav = document.getElementById('navLinks');
-  const link = e.target.closest?.('.nav-links a');
-  const hamburger = e.target.closest?.('.hamburger');
-  if (link) { nav?.classList.remove('active'); return; }
+  const link = safeClosest(e.target, '.nav-links a');
+  const hamburger = safeClosest(e.target, '.hamburger');
+  if (link) {
+    if (nav) nav.classList.remove('active');
+    return;
+  }
   if (hamburger) return;
-  if (nav?.classList.contains('active') && !e.target.closest?.('.navbar')) nav.classList.remove('active');
+  if (nav && nav.classList.contains('active') && !safeClosest(e.target, '.navbar')) nav.classList.remove('active');
 });
 
 window.addEventListener('resize', () => {
   if (window.matchMedia('(min-width:769px)').matches) {
-    document.getElementById('navLinks')?.classList.remove('active');
+    const nav = document.getElementById('navLinks');
+    if (nav) nav.classList.remove('active');
   }
 });
 
@@ -27,7 +49,7 @@ function fixCompanyBrandingTypos() {
   const right = 'المصرية الدولية';
   function fixText(t) {
     if (!t) return t;
-    return String(t).replaceAll(wrongAlt, right).replaceAll(wrong, right);
+    return replaceAllPlain(replaceAllPlain(String(t), wrongAlt, right), wrong, right);
   }
   document.title = fixText(document.title);
   document.querySelectorAll('.logo-text h1, .logo-text span, .footer h3').forEach((el) => {
@@ -49,7 +71,7 @@ function readCart() {
     const raw = localStorage.getItem(CART_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed : [];
-  } catch {
+  } catch (err) {
     return [];
   }
 }
@@ -68,8 +90,15 @@ function clearCart() {
 function addToCart(item) {
   const cart = readCart();
   const existing = cart.find((x) => x.id === item.id);
-  if (existing) existing.qty += item.qty ?? 1;
-  else cart.push({ ...item, qty: item.qty ?? 1 });
+  if (existing) existing.qty += coalesce(item.qty, 1);
+  else {
+    const nextItem = {};
+    Object.keys(item || {}).forEach((k) => {
+      nextItem[k] = item[k];
+    });
+    nextItem.qty = coalesce(item.qty, 1);
+    cart.push(nextItem);
+  }
   writeCart(cart);
 }
 
@@ -87,7 +116,7 @@ function updateCartBadges() {
 
 /* Attach handlers to buttons */
 document.addEventListener('click', (e) => {
-  const btn = e.target.closest?.('[data-add-to-cart]');
+  const btn = safeClosest(e.target, '[data-add-to-cart]');
   if (!btn) return;
   const id = btn.getAttribute('data-id') || `p_${Date.now()}`;
   const name = btn.getAttribute('data-name') || 'منتج';
@@ -147,7 +176,7 @@ function parseProductCardPriceAndDiscount(card) {
 
   for (const kv of meta.querySelectorAll('.kv')) {
     if (kv.getAttribute('data-auto-final') === '1') continue;
-    const lab = kv.querySelector('span')?.textContent?.trim() || '';
+    const lab = textContentTrim(kv.querySelector('span'));
     if (lab.includes('الخصم')) {
       discountKv = kv;
       const p = parseFirstNumberFromKvText(kv.textContent);
@@ -200,11 +229,11 @@ function initProductCardFinalPrices() {
 function getInitialText(card) {
   // Best-effort extraction from current card markup.
   const btn = card.querySelector('[data-add-to-cart]');
-  const btnName = btn?.getAttribute('data-name');
+  const btnName = btn ? btn.getAttribute('data-name') : '';
   const name =
     btnName ||
-    card.querySelector('h3')?.textContent?.trim() ||
-    card.querySelector('strong')?.textContent?.trim() ||
+    textContentTrim(card.querySelector('h3')) ||
+    textContentTrim(card.querySelector('strong')) ||
     'منتج';
 
   // Composition/usage can exist in products.html (field-label/field-value) or be placeholders.
@@ -212,8 +241,8 @@ function getInitialText(card) {
   let usage = '';
 
   card.querySelectorAll('.field-line').forEach((line) => {
-    const label = line.querySelector('.field-label')?.textContent?.trim() || '';
-    const value = line.querySelector('.field-value')?.textContent?.trim() || '';
+    const label = textContentTrim(line.querySelector('.field-label'));
+    const value = textContentTrim(line.querySelector('.field-value'));
     if (label.includes('التركيب')) composition = value === '—' ? '' : value;
     if (label.includes('الاستخدام')) usage = value === '—' ? '' : value;
   });
@@ -225,7 +254,7 @@ function parseInitialDiscount(card) {
   // products.html shows discount in `.kv` as: <span>الخصم</span> 10%
   const kvs = card.querySelectorAll('.kv');
   for (const kv of kvs) {
-    const label = kv.querySelector('span')?.textContent?.trim() || '';
+    const label = textContentTrim(kv.querySelector('span'));
     if (!label.includes('الخصم')) continue;
     const m = kv.textContent.match(/(\d+(\.\d+)?)/);
     if (!m) continue;
@@ -241,7 +270,7 @@ function readProductEdit(id) {
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return parsed && typeof parsed === 'object' ? parsed : null;
-  } catch {
+  } catch (err) {
     return null;
   }
 }
@@ -262,7 +291,8 @@ function initProductEditors() {
     const id = btn.getAttribute('data-id') || '';
     if (!id) return;
 
-    const initialImg = card.querySelector('img')?.getAttribute('src') || 'assets/product-placeholder.svg';
+    const initialImgEl = card.querySelector('img');
+    const initialImg = (initialImgEl && initialImgEl.getAttribute('src')) || 'assets/product-placeholder.svg';
     const { basePrice, discountPct } = parseProductCardPriceAndDiscount(card);
     const initialPrice = !Number.isNaN(basePrice)
       ? basePrice
@@ -278,8 +308,8 @@ function initProductEditors() {
     const state = {
       imageSrc: saved.imageSrc || initialImg,
       name: saved.name || btn.getAttribute('data-name') || initialName,
-      composition: saved.composition ?? initialComposition,
-      usage: saved.usage ?? initialUsage,
+      composition: coalesce(saved.composition, initialComposition),
+      usage: coalesce(saved.usage, initialUsage),
       price: Number.isFinite(saved.price) ? saved.price : initialPrice,
       discount: Number.isFinite(saved.discount) ? saved.discount : initialDiscount,
     };
@@ -330,7 +360,7 @@ function initProductEditors() {
     priceInput.type = 'number';
     priceInput.step = '1';
     priceInput.min = '0';
-    priceInput.value = String(state.price ?? 0);
+    priceInput.value = String(coalesce(state.price, 0));
 
     const discountLabel = document.createElement('label');
     discountLabel.textContent = 'الخصم (%)';
@@ -339,7 +369,7 @@ function initProductEditors() {
     discountInput.step = '0.1';
     discountInput.min = '0';
     discountInput.max = '100';
-    discountInput.value = String(state.discount ?? 0);
+    discountInput.value = String(coalesce(state.discount, 0));
 
     const discountedLine = document.createElement('div');
     discountedLine.className = 'discounted-line';
@@ -377,7 +407,7 @@ function initProductEditors() {
 
     uploadBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => {
-      const file = fileInput.files?.[0];
+      const file = fileInput.files && fileInput.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
@@ -447,8 +477,8 @@ function initProductEditors() {
       const next = {
         imageSrc: s.imageSrc || state.imageSrc,
         name: s.name || state.name,
-        composition: s.composition ?? state.composition,
-        usage: s.usage ?? state.usage,
+        composition: coalesce(s.composition, state.composition),
+        usage: coalesce(s.usage, state.usage),
         price: Number.isFinite(s.price) ? s.price : state.price,
         discount: Number.isFinite(s.discount) ? s.discount : state.discount,
       };
@@ -457,8 +487,8 @@ function initProductEditors() {
       nameInput.value = next.name;
       compInput.value = next.composition;
       usageInput.value = next.usage;
-      priceInput.value = String(next.price ?? 0);
-      discountInput.value = String(next.discount ?? 0);
+      priceInput.value = String(coalesce(next.price, 0));
+      discountInput.value = String(coalesce(next.discount, 0));
       syncToCardAndButton();
     }
 
@@ -505,7 +535,7 @@ function maybeInitProductEditors() {
   try {
     if (new URLSearchParams(location.search).get('admin') !== '1') return;
     initProductEditors();
-  } catch {
+  } catch (err) {
     /* ignore */
   }
 }
@@ -517,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (new URLSearchParams(location.search).get('admin') !== '1') {
       initProductCardFinalPrices();
     }
-  } catch {
+  } catch (err) {
     /* ignore */
   }
   initBlog();
@@ -531,11 +561,11 @@ window.addEventListener('storage', (e) => {
 /* Blog (localStorage) */
 function escapeHtml(s) {
   return String(s || '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+    .split('&').join('&amp;')
+    .split('<').join('&lt;')
+    .split('>').join('&gt;')
+    .split('"').join('&quot;')
+    .split("'").join('&#39;');
 }
 
 function normalizeBodyToHtml(text) {
@@ -545,7 +575,7 @@ function normalizeBodyToHtml(text) {
     .split(/\n\s*\n/g)
     .map((p) => p.trim())
     .filter(Boolean)
-    .map((p) => `<p>${escapeHtml(p).replaceAll('\n', '<br />')}</p>`);
+    .map((p) => `<p>${escapeHtml(p).split('\n').join('<br />')}</p>`);
   return paras.join('\n');
 }
 
@@ -608,7 +638,7 @@ function readBlogPosts() {
     }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
-  } catch {
+  } catch (err) {
     return [];
   }
 }
@@ -638,12 +668,21 @@ function deletePost(id) {
 }
 
 function safeIdFromTitle(title) {
-  const base = String(title || 'post')
+  let base = String(title || 'post')
     .trim()
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s_-]+/gu, '')
-    .replace(/\s+/g, '-')
-    .slice(0, 60);
+    .toLowerCase();
+  let unicodePattern = null;
+  try {
+    unicodePattern = new RegExp('[^\\p{L}\\p{N}\\s_-]+', 'gu');
+  } catch (err) {
+    unicodePattern = null;
+  }
+  if (unicodePattern) {
+    base = base.replace(unicodePattern, '');
+  } else {
+    base = base.replace(/[^a-z0-9\u0600-\u06FF\s_-]+/gi, '');
+  }
+  base = base.replace(/\s+/g, '-').slice(0, 60);
   const suffix = String(Date.now()).slice(-5);
   return base ? `${base}-${suffix}` : `post-${suffix}`;
 }
@@ -709,23 +748,32 @@ function initBlogListAndEditor() {
       .join('');
   }
 
-  coverPick?.addEventListener('click', () => coverFile?.click());
-  coverFile?.addEventListener('change', () => {
-    const file = coverFile.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      coverData = String(reader.result || 'logo.png');
-      coverPreview.src = coverData;
-    };
-    reader.readAsDataURL(file);
-  });
+  if (coverPick) {
+    coverPick.addEventListener('click', () => {
+      if (coverFile) coverFile.click();
+    });
+  }
+  if (coverFile) {
+    coverFile.addEventListener('change', () => {
+      const file = coverFile.files && coverFile.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        coverData = String(reader.result || 'logo.png');
+        coverPreview.src = coverData;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
-  resetBtn?.addEventListener('click', clearEditor);
+  if (resetBtn) resetBtn.addEventListener('click', clearEditor);
 
-  listEl?.addEventListener('click', (e) => {
-    const editId = e.target.closest?.('[data-blog-edit]')?.getAttribute('data-blog-edit');
-    const delId = e.target.closest?.('[data-blog-delete]')?.getAttribute('data-blog-delete');
+  if (listEl) {
+    listEl.addEventListener('click', (e) => {
+      const editBtn = safeClosest(e.target, '[data-blog-edit]');
+      const delBtn = safeClosest(e.target, '[data-blog-delete]');
+      const editId = editBtn ? editBtn.getAttribute('data-blog-edit') : null;
+      const delId = delBtn ? delBtn.getAttribute('data-blog-delete') : null;
     if (delId) {
       deletePost(delId);
       renderList();
@@ -745,28 +793,31 @@ function initBlogListAndEditor() {
       coverPreview.src = coverData;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  });
+    });
+  }
 
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = String(titleEl.value || '').trim();
-    if (!title) return;
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = String(titleEl.value || '').trim();
+      if (!title) return;
 
-    const id = String(idEl.value || '').trim() || safeIdFromTitle(title);
-    const post = {
-      id,
-      title,
-      category: String(catEl.value || '').trim() || 'عام',
-      minutes: Number(minEl.value || 0) || 5,
-      excerpt: String(excerptEl.value || '').trim(),
-      body: String(bodyEl.value || '').trim(),
-      cover: coverData || 'logo.png',
-      updatedAt: new Date().toISOString(),
-    };
-    upsertPost(post);
-    renderList();
-    clearEditor();
-  });
+      const id = String(idEl.value || '').trim() || safeIdFromTitle(title);
+      const post = {
+        id,
+        title,
+        category: String(catEl.value || '').trim() || 'عام',
+        minutes: Number(minEl.value || 0) || 5,
+        excerpt: String(excerptEl.value || '').trim(),
+        body: String(bodyEl.value || '').trim(),
+        cover: coverData || 'logo.png',
+        updatedAt: new Date().toISOString(),
+      };
+      upsertPost(post);
+      renderList();
+      clearEditor();
+    });
+  }
 
   renderList();
 }
@@ -810,7 +861,7 @@ function incPageView() {
     data.__total = (data.__total || 0) + 1;
     data.__last = new Date().toISOString();
     localStorage.setItem(PV_KEY, JSON.stringify(data));
-  } catch {
+  } catch (err) {
     // ignore
   }
 }
