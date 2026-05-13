@@ -24,7 +24,7 @@ window.addEventListener('resize', () => {
 function fixCompanyBrandingTypos() {
   const wrong = 'المصرية العالمية';
   const wrongAlt = 'المصرية العالميه';
-  const right = 'المصرية الدولية';
+  const right = 'يونيفيت للأدوية البيطرية';
   function fixText(t) {
     if (!t) return t;
     return String(t).replaceAll(wrongAlt, right).replaceAll(wrong, right);
