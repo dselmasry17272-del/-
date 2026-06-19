@@ -167,77 +167,215 @@
 
     <script src="assets/site.js"></script>
     <script>
-      const PV_KEY = 'eivp_pageviews_v1';
-      const ORDER_KEY = 'eivp_last_order_v1';
-      const CONTACT_KEY = 'eivp_last_contact_v1';
+      const ORDERS_KEY = 'eivp_orders_v1';
+      let currentFilter = 'all';
+      let currentOrderId = null;
 
-      function readJson(key) {
-        try {
-          const raw = localStorage.getItem(key);
-          return raw ? JSON.parse(raw) : null;
-        } catch {
-          return null;
-        }
+      function readOrders() {
+        try { return JSON.parse(localStorage.getItem(ORDERS_KEY)) || []; } catch { return []; }
       }
-
+      function writeOrders(arr) {
+        localStorage.setItem(ORDERS_KEY, JSON.stringify(arr));
+      }
+      function money(n) {
+        return (Number(n) || 0).toFixed(0) + ' ج.م';
+      }
       function fmtDate(s) {
-        try {
-          return new Date(s).toLocaleString('ar-EG');
-        } catch {
-          return '—';
-        }
+        try { return new Date(s).toLocaleString('ar-EG'); } catch { return '—'; }
+      }
+      function statusClass(s) {
+        const m = { pending: 'var(--gold-dark)', approved: '#1565C0', shipped: 'var(--secondary)', delivered: 'var(--primary)', cancelled: '#d32f2f' };
+        return 'background:' + (m[s] || '#888') + ';color:#fff;padding:4px 10px;border-radius:20px;font-size:.8rem;display:inline-block';
+      }
+      function statusLabel(s) {
+        const m = { pending: 'قيد الانتظار', approved: 'تمت الموافقة', shipped: 'تم الشحن', delivered: 'تم التوصيل', cancelled: 'ملغي' };
+        return m[s] || s;
+      }
+      function payLabel(s) {
+        const m = { cod: 'كاش عند الاستلام', vodafone: 'فودافون كاش', bank: 'تحويل بنكي' };
+        return m[s] || s;
       }
 
-      function render() {
-        const pv = readJson(PV_KEY) || {};
-        document.getElementById('totalViews').textContent = String(pv.__total || 0);
-        document.getElementById('lastUpdate').textContent = pv.__last ? fmtDate(pv.__last) : '—';
-
-        const pages = Object.entries(pv)
-          .filter(([k]) => !k.startsWith('__'))
-          .sort((a, b) => (b[1] || 0) - (a[1] || 0));
-
-        if (!pages.length) {
-          document.getElementById('pagesTable').innerHTML = '<p class="muted">لا توجد بيانات بعد. افتح صفحات الموقع ثم ارجع هنا.</p>';
-        } else {
-          document.getElementById('pagesTable').innerHTML = `
-            <div class="card" style="background:var(--light-bg);box-shadow:none">
-              ${pages
-                .slice(0, 20)
-                .map(
-                  ([name, count]) => `
-                    <div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06)">
-                      <div><strong>${name}</strong></div>
-                      <div class="muted">${count} زيارة</div>
-                    </div>
-                  `
-                )
-                .join('')}
-            </div>
-          `;
-        }
-
-        const lastOrder = readJson(ORDER_KEY);
-        document.getElementById('lastOrder').innerHTML = lastOrder
-          ? `<div><strong>${lastOrder.name}</strong> — ${lastOrder.phone}</div>
-             <div class="muted">${fmtDate(lastOrder.at)}</div>
-             <div class="muted">عدد العناصر: ${(lastOrder.cart || []).length}</div>`
-          : 'لا يوجد طلبات بعد.';
-
-        const lastContact = readJson(CONTACT_KEY);
-        document.getElementById('lastContact').innerHTML = lastContact
-          ? `<div><strong>${lastContact.name}</strong> — ${lastContact.role}</div>
-             <div class="muted">${fmtDate(lastContact.at)}</div>
-             <div class="muted">${lastContact.message}</div>`
-          : 'لا توجد رسائل بعد.';
+      function renderSummary(orders) {
+        document.getElementById('totalOrders').textContent = orders.length;
+        document.getElementById('pendingOrders').textContent = orders.filter(o => o.status === 'pending').length;
+        document.getElementById('shippedOrders').textContent = orders.filter(o => o.status === 'shipped').length;
+        document.getElementById('totalSales').textContent = money(orders.reduce((s, o) => s + ((o.totals && o.totals.total) || 0), 0));
       }
 
-      document.getElementById('resetAnalytics').addEventListener('click', () => {
-        localStorage.removeItem(PV_KEY);
-        render();
+      function renderOrders() {
+        const allOrders = readOrders();
+        const filtered = currentFilter === 'all' ? allOrders : allOrders.filter(o => o.status === currentFilter);
+        renderSummary(allOrders);
+
+        const tbody = document.getElementById('ordersTableBody');
+        if (!filtered.length) {
+          tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--gray-text)">لا توجد طلبات' + (currentFilter !== 'all' ? ' بهذه الحالة' : '') + '.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = filtered.map(o => {
+          const items = (o.items || []).map(i => i.name + ' ×' + i.qty).join(', ');
+          return '<tr style="border-bottom:1px solid #eee">' +
+            '<td style="padding:10px 8px"><strong>' + o.id + '</strong></td>' +
+            '<td style="padding:10px 8px">' + ((o.customer && o.customer.name) || '—') + '</td>' +
+            '<td style="padding:10px 8px">' + ((o.customer && o.customer.phone) || '—') + '</td>' +
+            '<td style="padding:10px 8px;font-size:.8rem">' + items + '</td>' +
+            '<td style="padding:10px 8px"><strong>' + money((o.totals && o.totals.total) || 0) + '</strong></td>' +
+            '<td style="padding:10px 8px">' + payLabel(o.paymentMethod) + '</td>' +
+            '<td style="padding:10px 8px;font-size:.8rem">' + fmtDate(o.createdAt) + '</td>' +
+            '<td style="padding:10px 8px"><span style="' + statusClass(o.status) + '">' + statusLabel(o.status) + '</span></td>' +
+            '<td style="padding:10px 8px">' +
+              '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+                '<button class="btn btn-outline view-order" data-id="' + o.id + '" style="padding:4px 8px;min-height:auto;font-size:.8rem">عرض</button>' +
+                '<button class="btn btn-outline whatsapp-order" data-id="' + o.id + '" style="padding:4px 8px;min-height:auto;font-size:.8rem;background:#25D366;color:#fff;border-color:#25D366"><i class="fab fa-whatsapp"></i></button>' +
+              '</div>' +
+            '</td></tr>';
+        }).join('');
+      }
+
+      function showOrderModal(orderId) {
+        const orders = readOrders();
+        const o = orders.find(x => x.id === orderId);
+        if (!o) return;
+        currentOrderId = orderId;
+        document.getElementById('modalTitle').textContent = 'تفاصيل الطلب - ' + o.id;
+        const items = (o.items || []).map(i =>
+          '<div style="display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06)">' +
+            '<span>' + i.name + ' ×' + i.qty + '</span>' +
+            '<span>' + money(i.price * i.qty) + '</span>' +
+          '</div>'
+        ).join('');
+        const ch = (o.statusHistory || []).map(h =>
+          '<div style="padding:4px 0;border-bottom:1px solid rgba(0,0,0,.04);font-size:.85rem">' +
+            '<span style="' + statusClass(h.status) + '">' + statusLabel(h.status) + '</span>' +
+            ' <span class="muted">' + fmtDate(h.at) + '</span>' +
+          '</div>'
+        ).join('') || '<div class="muted">لا يوجد تاريخ</div>';
+
+        document.getElementById('modalContent').innerHTML =
+          '<div class="card" style="background:var(--light-bg);box-shadow:none;margin-bottom:12px">' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.9rem">' +
+              '<div><strong>العميل:</strong> ' + ((o.customer && o.customer.name) || '—') + '</div>' +
+              '<div><strong>الهاتف:</strong> ' + ((o.customer && o.customer.phone) || '—') + '</div>' +
+              '<div><strong>الإيميل:</strong> ' + ((o.customer && o.customer.email) || '—') + '</div>' +
+              '<div><strong>المحافظة:</strong> ' + ((o.customer && o.customer.province) || '—') + '</div>' +
+              '<div style="grid-column:span 2"><strong>العنوان:</strong> ' + ((o.customer && o.customer.address) || '—') + '</div>' +
+              '<div><strong>الدفع:</strong> ' + payLabel(o.paymentMethod) + '</div>' +
+              '<div><strong>التواصل:</strong> ' + (o.contactMethod === 'email' ? 'بريد إلكتروني' : 'واتساب') + '</div>' +
+              '<div style="grid-column:span 2"><strong>ملاحظات:</strong> ' + (o.notes || '—') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card" style="background:var(--light-bg);box-shadow:none;margin-bottom:12px">' +
+            '<h4 style="margin:0 0 8px">المنتجات</h4>' +
+            '<div style="display:flex;justify-content:space-between;font-weight:700;padding:6px 0;border-bottom:2px solid var(--gold)">' +
+              '<span>المجموع الفرعي: ' + money((o.totals && o.totals.subtotal) || 0) + '</span>' +
+              '<span>التوصيل: ' + ((o.totals && o.totals.delivery === 0) ? 'مجاناً' : money((o.totals && o.totals.delivery) || 0)) + '</span>' +
+              '<span style="color:var(--secondary)">الإجمالي: ' + money((o.totals && o.totals.total) || 0) + '</span>' +
+            '</div>' +
+            items +
+          '</div>' +
+          '<div class="card" style="background:var(--light-bg);box-shadow:none;margin-bottom:12px">' +
+            '<h4 style="margin:0 0 8px">تحديث الحالة</h4>' +
+            '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+              ['pending','approved','shipped','delivered','cancelled'].map(s =>
+                '<button class="btn ' + (o.status === s ? 'btn-primary' : 'btn-outline') + ' status-btn" data-order="' + o.id + '" data-status="' + s + '" style="padding:6px 12px;min-height:auto;font-size:.85rem">' + statusLabel(s) + '</button>'
+              ).join('') +
+            '</div>' +
+          '</div>' +
+          '<div class="card" style="background:var(--light-bg);box-shadow:none">' +
+            '<h4 style="margin:0 0 8px">تاريخ الحالات</h4>' + ch +
+          '</div>' +
+          '<div style="display:flex;gap:10px;margin-top:12px">' +
+            '<button class="btn btn-outline" id="modalWhatsAppBtn" data-id="' + o.id + '" style="flex:1;background:#25D366;color:#fff;border-color:#25D366"><i class="fab fa-whatsapp"></i> واتساب</button>' +
+          '</div>';
+
+        document.getElementById('orderModal').style.display = 'flex';
+      }
+
+      document.getElementById('ordersTableBody').addEventListener('click', (e) => {
+        const viewBtn = e.target.closest('.view-order');
+        if (viewBtn) { showOrderModal(viewBtn.getAttribute('data-id')); return; }
+        const waBtn = e.target.closest('.whatsapp-order');
+        if (waBtn) { sendOrderWhatsApp(waBtn.getAttribute('data-id')); }
       });
 
-      render();
+      document.getElementById('modalContent').addEventListener('click', (e) => {
+        const statusBtn = e.target.closest('.status-btn');
+        if (!statusBtn) return;
+        const orderId = statusBtn.getAttribute('data-order');
+        const newStatus = statusBtn.getAttribute('data-status');
+        const orders = readOrders();
+        const o = orders.find(x => x.id === orderId);
+        if (!o || o.status === newStatus) return;
+        o.status = newStatus;
+        o.statusHistory.push({ status: newStatus, at: new Date().toISOString() });
+        writeOrders(orders);
+        showOrderModal(orderId);
+        renderOrders();
+      });
+
+      document.getElementById('modalContent').addEventListener('click', (e) => {
+        const waBtn = e.target.closest('#modalWhatsAppBtn');
+        if (waBtn) sendOrderWhatsApp(waBtn.getAttribute('data-id'));
+      });
+
+      document.getElementById('closeModal').addEventListener('click', () => {
+        document.getElementById('orderModal').style.display = 'none';
+      });
+
+      function sendOrderWhatsApp(orderId) {
+        const orders = readOrders();
+        const o = orders.find(x => x.id === orderId);
+        if (!o) return;
+        const items = (o.items || []).map(i => '• ' + i.name + ' ×' + i.qty + ' = ' + money(i.price * i.qty)).join('\n');
+        const msg = '🆕 *طلب - يونيفيت*\n\n' +
+          '📋 رقم الطلب: ' + o.id + '\n' +
+          '👤 الاسم: ' + ((o.customer && o.customer.name) || '—') + '\n' +
+          '📞 الهاتف: ' + ((o.customer && o.customer.phone) || '—') + '\n' +
+          '📍 العنوان: ' + ((o.customer && o.customer.address) || '—') + '\n' +
+          '🏙 المحافظة: ' + ((o.customer && o.customer.province) || '—') + '\n\n' +
+          '🛒 المنتجات:\n' + items + '\n\n' +
+          '💰 الإجمالي: ' + money((o.totals && o.totals.total) || 0) + '\n' +
+          '💳 الدفع: ' + payLabel(o.paymentMethod) + '\n' +
+          '📌 الحالة: ' + statusLabel(o.status) + '\n' +
+          (o.notes ? '📝 ملاحظات: ' + o.notes + '\n' : '') +
+          '📅 ' + fmtDate(o.createdAt);
+        window.open('https://wa.me/201008226733?text=' + encodeURIComponent(msg), '_blank');
+      }
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.getAttribute('data-filter');
+          renderOrders();
+        });
+      });
+
+      document.getElementById('exportOrders').addEventListener('click', () => {
+        const orders = readOrders();
+        if (!orders.length) { alert('لا توجد طلبات للتصدير.'); return; }
+        const rows = [['رقم الطلب','العميل','الهاتف','الإيميل','العنوان','المحافظة','المنتجات','المجموع','التوصيل','الإجمالي','الدفع','التواصل','الحالة','التاريخ','ملاحظات']];
+        orders.forEach(o => {
+          const items = (o.items || []).map(i => i.name + ' ×' + i.qty).join('; ');
+          rows.push([
+            o.id, (o.customer && o.customer.name) || '', (o.customer && o.customer.phone) || '', (o.customer && o.customer.email) || '',
+            (o.customer && o.customer.address) || '', (o.customer && o.customer.province) || '',
+            items, (o.totals && o.totals.subtotal) || 0, (o.totals && o.totals.delivery) || 0, (o.totals && o.totals.total) || 0,
+            payLabel(o.paymentMethod), o.contactMethod === 'email' ? 'بريد' : 'واتساب',
+            statusLabel(o.status), o.createdAt, o.notes || ''
+          ]);
+        });
+        const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'orders.csv';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      renderOrders();
     </script>
   </body>
 </html>
