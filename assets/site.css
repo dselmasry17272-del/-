@@ -425,3 +425,40 @@ a{text-decoration:none;color:inherit}
   .page-hero h1{font-size:1.3rem}
   .section-title h2{font-size:1.35rem}
 }
+
+/* Checkout form styles */
+.pay-method, .contact-method {
+  transition: all .2s ease;
+}
+.pay-method:hover, .contact-method:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+.pay-method:has(input:checked), .contact-method:has(input:checked) {
+  border-color: var(--primary) !important;
+  background: rgba(27,94,32,.06) !important;
+}
+
+/* Dashboard table */
+table { width: 100%; border-collapse: collapse; }
+th { background: var(--light-bg); font-weight: 800; white-space: nowrap; }
+tr:hover { background: rgba(0,0,0,.02); }
+
+/* Order modal */
+#orderModal .card { animation: fadeInUp .3s ease; }
+
+/* Filter active state */
+.filter-btn.active {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  table { font-size: .8rem; }
+  th, td { padding: 6px 4px !important; }
+}
+
+/* Order confirmation overlay */
+#orderConfirmOverlay .card { animation: fadeInUp .4s ease; }
