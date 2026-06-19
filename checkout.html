@@ -218,82 +218,78 @@
     <script src="assets/site.js"></script>
     <script>
       const CHECKOUT_CART_KEY = 'eivp_cart_v1';
-      const EASY_ORDER_URL = 'https://dselmasry17272-del.github.io/-/';
+      const ORDERS_KEY = 'eivp_orders_v1';
       const listEl = document.getElementById('cartList');
+      const subtotalEl = document.getElementById('subtotal');
+      const deliveryEl = document.getElementById('deliveryFee');
       const totalEl = document.getElementById('total');
       const resultEl = document.getElementById('orderResult');
       const clearCartConfirmBox = document.getElementById('clearCartConfirmBox');
       const confirmClearCartBtn = document.getElementById('confirmClearCart');
+      const confirmOverlay = document.getElementById('orderConfirmOverlay');
+      const confirmOrderId = document.getElementById('confirmOrderId');
+      const confirmOrderDetails = document.getElementById('confirmOrderDetails');
       let clearCartPending = false;
+      let lastOrder = null;
 
       function readCart() {
         try {
           const raw = localStorage.getItem(CHECKOUT_CART_KEY);
           const arr = raw ? JSON.parse(raw) : [];
           return Array.isArray(arr) ? arr : [];
-        } catch {
-          return [];
-        }
+        } catch { return []; }
       }
       function writeCart(arr) {
         localStorage.setItem(CHECKOUT_CART_KEY, JSON.stringify(arr));
         if (typeof updateCartBadges === 'function') updateCartBadges();
       }
       function clearCartStorage() {
-        // تفريغ قوي لتفادي أي تعارض مع كاش/نسخ قديمة.
         localStorage.removeItem(CHECKOUT_CART_KEY);
         localStorage.setItem(CHECKOUT_CART_KEY, '[]');
         if (typeof clearCart === 'function') clearCart();
         if (typeof updateCartBadges === 'function') updateCartBadges();
-        document.querySelectorAll('[data-cart-count]').forEach((el) => {
-          el.textContent = '';
-          el.style.display = 'none';
-        });
+        document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = ''; el.style.display = 'none'; });
       }
       function removeItemFromCart(id) {
-        const current = readCart();
-        const next = current.filter((item) => item.id !== id);
-        writeCart(next);
+        writeCart(readCart().filter(item => item.id !== id));
       }
       function money(n) {
-        return `${Number(n || 0).toFixed(0)} ج.م`;
+        return (Number(n) || 0).toFixed(0) + ' ج.م';
       }
+      function generateOrderId() {
+        const orders = (() => { try { return JSON.parse(localStorage.getItem(ORDERS_KEY)) || []; } catch { return []; } })();
+        const nums = orders.map(o => parseInt((o.id || 'ORD-0').replace('ORD-', ''), 10)).filter(n => !isNaN(n));
+        const next = nums.length ? Math.max(...nums) + 1 : 1;
+        return 'ORD-' + String(next).padStart(4, '0');
+      }
+
       function render() {
         const cart = readCart();
         if (!cart.length) {
           listEl.innerHTML = '<p class="muted">السلة فارغة. ابدأ من صفحة المنتجات.</p>';
+          subtotalEl.textContent = money(0);
           totalEl.textContent = money(0);
+          deliveryEl.textContent = '—';
           return;
         }
-        const total = cart.reduce((sum, x) => sum + (Number(x.price) || 0) * (Number(x.qty) || 0), 0);
+        const subtotal = cart.reduce((sum, x) => sum + (Number(x.price) || 0) * (Number(x.qty) || 0), 0);
+        const delivery = subtotal >= 500 ? 0 : 30;
+        const total = subtotal + delivery;
+        subtotalEl.textContent = money(subtotal);
+        deliveryEl.textContent = delivery === 0 ? 'مجاناً (أكثر من 500 ج.م)' : money(delivery);
         totalEl.textContent = money(total);
-        listEl.innerHTML = cart
-          .map(
-            (x) => `
-              <div class="card" style="background:var(--light-bg);box-shadow:none;margin-bottom:12px">
-                <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
-                  <div>
-                    <strong>${x.name}</strong>
-                    <div class="muted">${x.category || ''}</div>
-                  </div>
-                  <div style="text-align:left">
-                    <div><strong>${money(x.price)}</strong></div>
-                    <div class="muted">الكمية: ${x.qty}</div>
-                    <button
-                      class="btn btn-outline"
-                      type="button"
-                      data-remove-item="${x.id}"
-                      style="margin-top:8px;padding:6px 12px"
-                    >
-                      <i class="fa-solid fa-trash"></i>
-                      إزالة
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `
-          )
-          .join('');
+        listEl.innerHTML = cart.map(x =>
+          '<div class="card" style="background:var(--light-bg);box-shadow:none;margin-bottom:12px">' +
+            '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">' +
+              '<div><strong>' + x.name + '</strong><div class="muted">' + (x.category || '') + '</div></div>' +
+              '<div style="text-align:left">' +
+                '<div><strong>' + money(x.price) + '</strong></div>' +
+                '<div class="muted">الكمية: ' + x.qty + '</div>' +
+                '<button class="btn btn-outline" type="button" data-remove-item="' + x.id + '" style="margin-top:8px;padding:6px 12px"><i class="fa-solid fa-trash"></i> إزالة</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        ).join('');
       }
 
       document.getElementById('clearCart').addEventListener('click', () => {
@@ -313,9 +309,7 @@
       listEl.addEventListener('click', (e) => {
         const removeBtn = e.target.closest('[data-remove-item]');
         if (!removeBtn) return;
-        const itemId = removeBtn.getAttribute('data-remove-item');
-        if (!itemId) return;
-        removeItemFromCart(itemId);
+        removeItemFromCart(removeBtn.getAttribute('data-remove-item'));
         render();
         clearCartPending = false;
         clearCartConfirmBox.style.display = 'none';
@@ -325,23 +319,65 @@
       document.getElementById('orderForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const cart = readCart();
-        if (!cart.length) {
-          resultEl.textContent = '⚠️ السلة فارغة.';
-          return;
-        }
-        const data = new FormData(e.target);
-        const payload = Object.fromEntries(data.entries());
-        const order = { ...payload, cart, at: new Date().toISOString() };
-        localStorage.setItem('eivp_last_order_v1', JSON.stringify(order));
-        resultEl.textContent = '✅ جاري تحويلك لإتمام الطلب عبر Easy Order...';
+        if (!cart.length) { resultEl.textContent = '⚠️ السلة فارغة.'; return; }
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        const subtotal = cart.reduce((s, x) => s + (Number(x.price) || 0) * (Number(x.qty) || 0), 0);
+        const delivery = subtotal >= 500 ? 0 : 30;
+        const total = subtotal + delivery;
+        const orderId = generateOrderId();
+
+        lastOrder = {
+          id: orderId,
+          customer: { name: data.name, phone: data.phone, email: data.email || '', address: data.address, province: data.province || '' },
+          items: cart.map(x => ({ id: x.id, name: x.name, category: x.category || '', price: Number(x.price) || 0, qty: Number(x.qty) || 1 })),
+          totals: { subtotal, delivery, total },
+          paymentMethod: data.paymentMethod,
+          contactMethod: data.contactMethod,
+          notes: data.notes || '',
+          status: 'pending',
+          createdAt: new Date().toISOString(),
+          statusHistory: [{ status: 'pending', at: new Date().toISOString() }],
+        };
+
+        const orders = (() => { try { return JSON.parse(localStorage.getItem(ORDERS_KEY)) || []; } catch { return []; } })();
+        orders.unshift(lastOrder);
+        localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+        localStorage.setItem('eivp_last_order_v1', JSON.stringify(lastOrder));
+
+        const itemsList = lastOrder.items.map(i => i.name + ' x' + i.qty + ' (' + money(i.price * i.qty) + ')').join('\n');
+        confirmOrderId.textContent = 'رقم الطلب: ' + orderId;
+        confirmOrderDetails.innerHTML = '<strong>' + lastOrder.customer.name + '</strong><br>' +
+          'هاتف: ' + lastOrder.customer.phone + '<br>' +
+          'العنوان: ' + lastOrder.customer.address + '<br>' +
+          'وسيلة الدفع: ' + ({ cod: 'كاش عند الاستلام', vodafone: 'فودافون كاش', bank: 'تحويل بنكي' }[lastOrder.paymentMethod] || lastOrder.paymentMethod) + '<br>' +
+          'الإجمالي: ' + money(lastOrder.totals.total);
+
+        confirmOverlay.style.display = 'flex';
         e.target.reset();
-        clearCartPending = false;
-        clearCartConfirmBox.style.display = 'none';
         clearCartStorage();
         render();
-        setTimeout(() => {
-          window.location.href = EASY_ORDER_URL;
-        }, 350);
+      });
+
+      document.getElementById('sendWhatsAppBtn').addEventListener('click', () => {
+        if (!lastOrder) return;
+        const items = lastOrder.items.map(i => '• ' + i.name + ' ×' + i.qty + ' = ' + money(i.price * i.qty)).join('\n');
+        const payLabels = { cod: 'كاش عند الاستلام', vodafone: 'فودافون كاش', bank: 'تحويل بنكي' };
+        const msg = '🆕 *طلب جديد - يونيفيت*\n\n' +
+          '📋 رقم الطلب: ' + lastOrder.id + '\n' +
+          '👤 الاسم: ' + lastOrder.customer.name + '\n' +
+          '📞 الهاتف: ' + lastOrder.customer.phone + '\n' +
+          '📍 العنوان: ' + lastOrder.customer.address + '\n' +
+          '🏙 المحافظة: ' + (lastOrder.customer.province || '—') + '\n\n' +
+          '🛒 المنتجات:\n' + items + '\n\n' +
+          '💰 الإجمالي: ' + money(lastOrder.totals.total) + '\n' +
+          '💳 الدفع: ' + (payLabels[lastOrder.paymentMethod] || lastOrder.paymentMethod) + '\n' +
+          (lastOrder.notes ? '📝 ملاحظات: ' + lastOrder.notes + '\n' : '') +
+          '📅 ' + new Date(lastOrder.createdAt).toLocaleString('ar-EG');
+        openWhatsAppText(msg);
+      });
+
+      document.getElementById('closeConfirmBtn').addEventListener('click', () => {
+        confirmOverlay.style.display = 'none';
       });
 
       render();
