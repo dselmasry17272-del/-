@@ -816,3 +816,88 @@ function incPageView() {
 }
 incPageView();
 
+
+/* ===== Orders System ===== */
+const ORDERS_KEY = 'eivp_orders_v1';
+
+function readOrders() {
+  try {
+    const raw = localStorage.getItem(ORDERS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
+}
+
+function writeOrders(orders) {
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+}
+
+function generateOrderId() {
+  const n = readOrders().length + 1;
+  return 'ORD-' + String(n).padStart(4, '0');
+}
+
+function placeOrder(customerData, cartItems, paymentMethod, contactMethod, notes) {
+  const orders = readOrders();
+  const subtotal = cartItems.reduce((s, x) => s + (Number(x.price) || 0) * (Number(x.qty) || 0), 0);
+  const delivery = subtotal >= 500 ? 0 : 30;
+  const total = subtotal + delivery;
+
+  const order = {
+    id: generateOrderId(),
+    customer: {
+      name: customerData.name,
+      phone: customerData.phone,
+      email: customerData.email || '',
+      address: customerData.address,
+      province: customerData.province || '',
+      city: customerData.city || '',
+    },
+    items: cartItems.map(x => ({
+      id: x.id,
+      name: x.name,
+      category: x.category || '',
+      price: Number(x.price) || 0,
+      qty: Number(x.qty) || 1,
+      image: x.image || '',
+      composition: x.composition || '',
+    })),
+    totals: { subtotal, delivery, total },
+    paymentMethod,
+    contactMethod,
+    notes: notes || '',
+    status: 'pending',
+    createdAt: new Date().toISOString(),
+    statusHistory: [{ status: 'pending', at: new Date().toISOString() }],
+  };
+
+  orders.unshift(order);
+  writeOrders(orders);
+  return order;
+}
+
+function updateOrderStatus(orderId, newStatus) {
+  const orders = readOrders();
+  const order = orders.find(o => o.id === orderId);
+  if (!order) return null;
+  order.status = newStatus;
+  order.statusHistory.push({ status: newStatus, at: new Date().toISOString() });
+  writeOrders(orders);
+  return order;
+}
+
+function getOrderWhatsAppMessage(order) {
+  const items = order.items.map(x => `  • ${x.name} × ${x.qty} = ${(x.price * x.qty).toFixed(0)} ج.م`).join('\n');
+  return `📦 *طلب جديد - ${order.id}*\n\n👤 *العميل:* ${order.customer.name}\n📱 *الهاتف:* ${order.customer.phone}\n📍 *العنوان:* ${order.customer.address}${order.customer.province ? `\n🏙 *المحافظة:* ${order.customer.province}` : ''}\n\n*المنتجات:*\n${items}\n\n💰 *المجموع:* ${order.totals.subtotal.toFixed(0)} ج.م\n🚚 *التوصيل:* ${order.totals.delivery.toFixed(0)} ج.م\n💵 *الإجمالي:* ${order.totals.total.toFixed(0)} ج.م\n💳 *الدفع:* ${order.paymentMethod === 'cod' ? 'كاش عند الاستلام' : order.paymentMethod === 'vodafone' ? 'فودافون كاش' : 'تحويل بنكي'}\n📨 *التواصل:* ${order.contactMethod === 'whatsapp' ? 'واتساب' : 'إيميل'}\n🕐 *التاريخ:* ${new Date(order.createdAt).toLocaleString('ar-EG')}`;
+}
+
+function openOrderWhatsApp(order) {
+  const msg = getOrderWhatsAppMessage(order);
+  const url = 'https://wa.me/201008226733?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+}
+
+function openWhatsAppText(text) {
+  const url = 'https://wa.me/201008226733?text=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+}
