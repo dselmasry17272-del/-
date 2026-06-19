@@ -14,7 +14,8 @@
 .page-hero-brand div{flex:1}
 @media(max-width:600px){.page-hero-brand{flex-direction:column;text-align:center}}
 </style>
-  </head>
+    <style>.page-hero-brand{display:flex;align-items:center;gap:16px;margin-bottom:12px}.page-hero-logo{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.3);box-shadow:0 2px 12px rgba(0,0,0,.2)}.page-hero-brand div{flex:1}@media(max-width:600px){.page-hero-brand{flex-direction:column;text-align:center}}</style>
+</head>
   <body>
     <nav class="navbar">
       <div class="container">
@@ -40,8 +41,13 @@
 
     <header class="page-hero">
       <div class="container">
-        <div class="pill"><i class="fa-solid fa-boxes-stacked"></i> كتالوج المنتجات</div>
-        <h1>منتجات الأدوية البيطرية</h1>
+        <div class="page-hero-brand">
+          <img src="logo.png" alt="يونيفيت" class="page-hero-logo" />
+          <div>
+            <div class="pill"><i class="fa-solid fa-boxes-stacked"></i> كتالوج المنتجات</div>
+            <h1>منتجات الأدوية البيطرية</h1>
+          </div>
+        </div>
         <p>اختر القطاع، ثم استعرض التصنيع المحلي أو المستورد. (يمكن تحويلها لاحقاً لقاعدة بيانات/لوحة إدارة).</p>
         <div class="breadcrumbs">
           <a href="index.html">الرئيسية</a> / <span>المنتجات</span>
