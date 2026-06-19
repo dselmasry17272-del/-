@@ -34,8 +34,8 @@
 
     <header class="page-hero">
       <div class="container"><div class="page-hero-brand"><div class="page-hero-brand-content"><div class="pill"><i class="fa-solid fa-cart-shopping"></i> صفحة البيع</div>
-        <h1>السلة وإتمام الطلب (نموذج)</h1>
-        <p>هذه نسخة ثابتة تعمل محلياً. يمكن ربط الدفع/الطلبات لاحقاً حسب الاستضافة.</p>
+        <h1>السلة وإتمام الطلب</h1>
+        <p>اختر المنتجات، أدخل بياناتك، وأكد الطلب.</p>
         <div class="breadcrumbs">
           <a href="index.html">الرئيسية</a> / <span>السلة</span>
         </div></div><img src="logo.png" alt="يونيفيت" class="page-hero-logo" /></div></div></header>
@@ -61,36 +61,122 @@
           <aside class="card checkout-form-col">
             <h3 style="margin-top:0">بيانات الطلب</h3>
             <form id="orderForm">
-              <div class="form-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                 <div>
-                  <label style="font-weight:800">الاسم</label>
-                  <input required name="name" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" />
+                  <label style="font-weight:800">الاسم كامل <span style="color:#d32f2f">*</span></label>
+                  <input required name="name" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;font-size:1rem" placeholder="الاسم ثلاثي" />
                 </div>
                 <div>
-                  <label style="font-weight:800">الهاتف</label>
-                  <input required name="phone" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" />
+                  <label style="font-weight:800">رقم الهاتف <span style="color:#d32f2f">*</span></label>
+                  <input required name="phone" type="tel" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;font-size:1rem" placeholder="01XXXXXXXXX" />
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+                <div>
+                  <label style="font-weight:800">البريد الإلكتروني</label>
+                  <input name="email" type="email" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;font-size:1rem" placeholder="example@email.com" />
+                </div>
+                <div>
+                  <label style="font-weight:800">المحافظة</label>
+                  <input name="province" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;font-size:1rem" placeholder="مثال: القاهرة" />
                 </div>
               </div>
               <div style="margin-top:12px">
-                <label style="font-weight:800">العنوان</label>
-                <input required name="address" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit" />
+                <label style="font-weight:800">عنوان التوصيل بالتفصيل <span style="color:#d32f2f">*</span></label>
+                <input required name="address" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;font-size:1rem" placeholder="الشارع - المنطقة - المدينة - بجانب" />
               </div>
+
+              <div style="margin-top:16px">
+                <label style="font-weight:800;display:block;margin-bottom:8px">وسيلة الدفع <span style="color:#d32f2f">*</span></label>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <label class="pay-method" style="flex:1;min-width:120px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:center;transition:all .2s">
+                    <input type="radio" name="paymentMethod" value="cod" checked style="display:none" />
+                    <div><i class="fa-solid fa-money-bill-wave" style="font-size:1.3rem;color:#2E7D32"></i></div>
+                    <div style="font-weight:700;margin-top:4px">كاش عند الاستلام</div>
+                  </label>
+                  <label class="pay-method" style="flex:1;min-width:120px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:center;transition:all .2s">
+                    <input type="radio" name="paymentMethod" value="vodafone" style="display:none" />
+                    <div><i class="fa-solid fa-mobile-screen-button" style="font-size:1.3rem;color:#E65100"></i></div>
+                    <div style="font-weight:700;margin-top:4px">فودافون كاش</div>
+                  </label>
+                  <label class="pay-method" style="flex:1;min-width:120px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:center;transition:all .2s">
+                    <input type="radio" name="paymentMethod" value="bank" style="display:none" />
+                    <div><i class="fa-solid fa-building-columns" style="font-size:1.3rem;color:#1565C0"></i></div>
+                    <div style="font-weight:700;margin-top:4px">تحويل بنكي</div>
+                  </label>
+                </div>
+              </div>
+
+              <div style="margin-top:16px">
+                <label style="font-weight:800;display:block;margin-bottom:8px">وسيلة التواصل المفضلة <span style="color:#d32f2f">*</span></label>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <label class="contact-method" style="flex:1;min-width:140px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:center;transition:all .2s;background:rgba(37,211,102,.08);border-color:#25D366">
+                    <input type="radio" name="contactMethod" value="whatsapp" checked style="display:none" />
+                    <div><i class="fab fa-whatsapp" style="font-size:1.3rem;color:#25D366"></i></div>
+                    <div style="font-weight:700;margin-top:4px">واتساب</div>
+                  </label>
+                  <label class="contact-method" style="flex:1;min-width:140px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:center;transition:all .2s">
+                    <input type="radio" name="contactMethod" value="email" style="display:none" />
+                    <div><i class="fa-solid fa-envelope" style="font-size:1.3rem;color:#1565C0"></i></div>
+                    <div style="font-weight:700;margin-top:4px">البريد الإلكتروني</div>
+                  </label>
+                </div>
+              </div>
+
               <div style="margin-top:12px">
-                <label style="font-weight:800">ملاحظات</label>
-                <textarea name="notes" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;min-height:90px"></textarea>
+                <label style="font-weight:800">ملاحظات (اختياري)</label>
+                <textarea name="notes" style="width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;min-height:70px;font-size:1rem" placeholder="أي ملاحظات إضافية للطلب"></textarea>
               </div>
-              <div class="card" style="background:var(--light-bg);box-shadow:none;margin-top:12px">
-                <div style="display:flex;justify-content:space-between;gap:10px">
+
+              <div class="card" style="background:var(--light-bg);box-shadow:none;margin-top:16px">
+                <div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0">
+                  <span>المجموع الفرعي</span>
+                  <span id="subtotal">0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0">
+                  <span>رسوم التوصيل</span>
+                  <span id="deliveryFee">مجاناً (أكثر من 500 ج.م)</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:2px solid var(--gold);margin-top:4px;font-size:1.2rem">
                   <strong>الإجمالي</strong>
-                  <strong id="total">0</strong>
+                  <strong id="total" style="color:var(--secondary)">0</strong>
                 </div>
               </div>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-                <button class="btn btn-primary" type="submit">تأكيد الطلب</button>
-                <a class="btn btn-outline" href="contact.html">استفسار</a>
+
+              <div id="paymentInfo" style="margin-top:12px;padding:12px;background:#fff8e1;border-radius:12px;border:1px solid rgba(249,168,37,.35);display:none">
+                <strong>معلومات الدفع:</strong>
+                <div id="paymentDetails" style="margin-top:6px"></div>
+              </div>
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+                <button class="btn btn-primary" type="submit" id="submitBtn" style="flex:1">
+                  <i class="fa-solid fa-check"></i> تأكيد الطلب
+                </button>
+                <a class="btn btn-outline" href="contact.html"><i class="fa-solid fa-question"></i> استفسار</a>
               </div>
               <p id="orderResult" class="muted" style="margin-top:12px"></p>
             </form>
+
+            <!-- Order confirmation overlay -->
+            <div id="orderConfirmOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;padding:20px">
+              <div class="card" style="max-width:500px;width:100%;text-align:center;padding:30px">
+                <div style="font-size:3rem;margin-bottom:10px">✅</div>
+                <h2 style="color:var(--primary);margin:0 0 8px">تم تأكيد الطلب!</h2>
+                <p style="color:var(--gray-text);margin:0 0 20px">جاري إرسال صورة الفاتورة لاعتمادها من طرفكم لإتمام عملية الشحن.</p>
+                <div class="card" style="background:var(--light-bg);box-shadow:none;margin-bottom:16px;text-align:right">
+                  <div style="font-weight:700;margin-bottom:8px" id="confirmOrderId"></div>
+                  <div style="font-size:.9rem;color:var(--gray-text)" id="confirmOrderDetails"></div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn btn-primary" id="sendWhatsAppBtn" style="flex:1;background:#25D366">
+                    <i class="fab fa-whatsapp"></i> إرسال للواتساب
+                  </button>
+                  <button class="btn btn-outline" id="closeConfirmBtn">
+                    متابعة التسوق
+                  </button>
+                </div>
+              </div>
+            </div>
           </aside>
         </div>
       </div>
